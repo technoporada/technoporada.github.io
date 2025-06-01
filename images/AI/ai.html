@@ -1,67 +1,177 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>Galeria AI</title>
-    <style>
-        body {
-            background: #111;
-            color: #eee;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            padding: 20px;
-        }
-        .gallery img {
-            max-width: 180px;
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #000a;
-            transition: transform 0.2s;
-        }
-        .gallery img:hover {
-            transform: scale(1.08);
-        }
-        @media (max-width: 600px) {
-            .gallery img {
-                max-width: 100px;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galeria AI - technoporada</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0; padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+    gap: 12px;
+  }
+  .gallery img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 0 0 5px #0f0;
+    transition: transform 0.2s ease;
+  }
+  .gallery img:hover {
+    transform: scale(1.05);
+  }
+  /* Lightbox */
+  #lightbox {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 20px #0f0;
+  }
+  #lightbox:target {
+    display: flex;
+  }
+  #lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #0f0;
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
 </head>
 <body>
-    <h1 style="text-align:center;">Galeria AI</h1>
-    <div class="gallery">
-        <img src="2024-05-06_11-49-44_8142.jpeg" alt="">
-        <img src="2024-05-06_11-50-33_5717.jpeg" alt="">
-        <img src="2024-05-06_11-50-58_4415.jpeg" alt="">
-        <img src="2024-05-06_11-52-49_2288.jpeg" alt="">
-        <img src="2024-05-06_11-55-00_9915.jpeg" alt="">
-        <img src="2024-05-06_11-57-45_9212.jpeg" alt="">
-        <img src="2024-05-06_11-59-27_3916.jpeg" alt="">
-        <img src="2024-05-06_12-00-15_1031.jpeg" alt="">
-        <img src="2024-05-06_12-03-13_8280.jpeg" alt="">
-        <img src="2024-05-06_12-04-07_8772.jpeg" alt="">
-        <img src="2024-05-06_12-05-01_4953.jpeg" alt="">  
-        <img src="2024-05-06_12-06-01_6260.jpeg" alt="">
-        <img src="2024-05-06_12-07-01_1234.jpeg" alt="">
-        <img src="2024-05-06_12-08-01_4567.jpeg" alt="">
-        <img src="2024-05-06_12-09-01_7890.jpeg" alt="">
-        <img src="2024-05-06_12-10-01_2345.jpeg" alt="">
-        <img src="2024-05-06_12-11-01_6789.jpeg" alt="">
-        <img src="2024-05-06_12-12-01_0123.jpeg" alt="">
-        <img src="2024-05-06_12-13-01_4567.jpeg" alt="">
-        <img src="2024-05-08_21-46-54_2560.jpeg" alt="">   
-        <img src="2024-05-08_21-42-38_5471.jpeg" alt="">
-        <img src="2024-05-08_21-41-45_7500.jpeg" alt="">
-        <img src="2024-05-08_21-41-19_4302.jpeg" alt="Ethereal angels in flowing robes soaring through a dramatic sky filled with swirling clouds. Some angels wear purple dresses while one wears blue. The celestial beings float gracefully against a backdrop of golden sunset colors blending into deep blue cosmic swirls. The scene conveys a sense of divine peace and heavenly movement">
-    </div>
+
+<h1>Galeria AI - technoporada</h1>
+
+<div class="gallery">
+  <!-- Tu będą miniatury -->
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <a href="#" id="lightbox-close" title="Zamknij">&times;</a>
+  <img src="" alt="Pełny obraz" />
+</div>
+
+<script>
+  const galleryDiv = document.querySelector('.gallery');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+
+  // Lista plików - wstaw tutaj swoje nazwy
+  const images = [
+    "2024-05-06_11-49-44_8142.jpeg",
+    "2024-05-06_11-50-33_5717.jpeg",
+    "2024-05-06_11-50-58_4415.jpeg",
+    "2024-05-06_11-52-49_2288.jpeg",
+    "2024-05-06_11-55-00_9915.jpeg",
+    "2024-05-06_11-57-45_9212.jpeg",
+    "2024-05-06_11-59-27_3916.jpeg",
+    "2024-05-06_12-00-15_1031.jpeg",
+    "2024-05-06_12-03-13_8280.jpeg",
+    "2024-05-06_12-04-07_8772.jpeg",
+    "2024-05-06_12-05-01_4953.jpeg",
+    "2024-05-06_12-05-55_9963.jpeg",
+    "2024-05-06_12-09-20_7208.jpeg",
+    "2024-05-06_12-10-14_7395.jpeg",
+    "2024-05-06_12-11-07_2611.jpeg",
+    "2024-05-06_12-12-41_1293.jpeg",
+    "2024-05-06_12-13-34_8113.jpeg",
+    "2024-05-06_12-15-08_2593 (1).jpeg",
+    "2024-05-06_12-15-08_2593.jpeg",
+    "2024-05-06_12-16-01_6297.jpeg",
+    "2024-05-06_12-34-22_6903.png",
+    "2024-05-06_12-34-47_5420.png",
+    "2024-05-06_15-06-00_8981.png",
+    "2024-05-06_15-06-25_9836.png",
+    "2024-05-06_18-12-04_7356.jpeg",
+    "2024-05-06_18-12-31_6081.jpeg",
+    "2024-05-06_18-13-26_6940.jpeg",
+    "2024-05-08_21-19-02_3945.png",
+    "2024-05-08_21-20-42_6689.jpeg",
+    "2024-05-08_21-21-08_5353.jpeg",
+    "2024-05-08_21-22-40_7041.jpeg",
+    "2024-05-08_21-23-05_2162.jpeg",
+    "2024-05-08_21-24-03_2172.jpeg",
+    "2024-05-08_21-25-19_5243.jpeg",
+    "2024-05-08_21-27-02_5538.jpeg",
+    "2024-05-08_21-31-43_4099.jpeg",
+    "2024-05-08_21-32-09_6696.jpeg",
+    "2024-05-08_21-32-34_8414.jpeg",
+    "2024-05-08_21-41-19_4302.jpeg",
+    "2024-05-08_21-41-45_7500.jpeg",
+    "2024-05-08_21-42-38_5471.jpeg",
+    "2024-05-08_21-46-54_2560.jpeg",
+    "20250421_1728_Cyberpunkowa Relacja_simple_compose_01jscf9a1jf9gvvpntywtq.png",
+    "ChatGPT Image 21 kwi 2025, 17_27_48.png",
+    "ChatGPT Image 21 kwi 2025, 17_37_36.png",
+    "ChatGPT Image 26 kwi 2025, 18_04_17.png",
+    "ChatGPT Image 26 kwi 2025, 18_19_21.png",
+    "ChatGPT Image 26 kwi 2025, 20_07_21.png",
+    "ChatGPT Image 26 kwi 2025, 20_10_53.png",
+    "ChatGPT Image 27 kwi 2025, 17_30_56.png",
+    "ChatGPT Image 27 kwi 2025, 17_35_55.png",
+    "ChatGPT Image 27 kwi 2025, 17_41_04.png",
+    "ChatGPT Image 27 kwi 2025, 21_01_57.png",
+    "ChatGPT Image 27 kwi 2025, 22_31_45.png",
+    "Ciepłe światło, bliskość zakochanych.png",
+    "Finally_they_reached_the_targe.jpeg",
+    "He_had_seen_it_all_from_the_tr.jpeg",
+    "He_inserted_the_USB_into_a_lap.jpeg"
+  ];
+
+  // Tworzenie miniatur
+  images.forEach(file => {
+    const img = document.createElement('img');
+    img.src = `images/AI/${encodeURIComponent(file)}`;
+    img.alt = file;
+    img.title = file;
+    img.loading = 'lazy';
+
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.style.display = 'flex';
+      location.hash = 'lightbox'; // aktywuje CSS #lightbox:target
+    });
+
+    galleryDiv.appendChild(img);
+  });
+
+  // Zamknięcie lightboxa kliknięciem na "x" lub poza zdjęciem
+  document.getElementById('lightbox-close').addEventListener('click', () => {
+    lightbox.style.display = 'none';
+    location.hash = '';
+  });
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) {
+      lightbox.style.display = 'none';
+      location.hash = '';
+    }
+  });
+</script>
+
 </body>
 </html>
