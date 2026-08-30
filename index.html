@@ -612,6 +612,28 @@
                     </p>
                 </div>
             </div>
+            
+            <div class="rabbit-hole-layer" id="layer6">
+                <h2>Warstwa Szósta: Terminal</h2>
+                <div class="layer-content">
+                    <p>Masz pełny dostęp. Wpisz <span class="hint">help</span>, aby zobaczyć komendy. Ale uważaj — niektóre rzeczy lepiej zostawić w spokoju.</p>
+                    
+                    <div class="terminal interactive" id="iterm">
+                        <div class="terminal-header">
+                            <div class="terminal-button red"></div>
+                            <div class="terminal-button yellow"></div>
+                            <div class="terminal-button green"></div>
+                            <div class="terminal-title">h5n1@matrix:~</div>
+                        </div>
+                        <div class="terminal-content" id="iterm-out"></div>
+                        <div class="command-line" style="display:flex;align-items:center;">
+                            <span class="prompt">root@matrix:~$</span>
+                            <span id="iterm-input-wrap" style="flex:1;margin-left:8px;"></span>
+                            <span class="cursor" style="width:9px;height:1.1em;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Modal for special effects -->
@@ -778,10 +800,150 @@
                         case 4:
                             showModal('WITAJ W MOIM KODZIE', 2000);
                             break;
+                        case 5:
+                            showModal('OTWIERAM TERMINAL ROOT', 2000);
+                            initTerminal();
+                            break;
                     }
                 }, 6000 * index);
             });
         }
+        
+        // Interactive Terminals + easter eggs
+        let termBuffer = '';
+        let termHistory = [];
+        let termHistPos = -1;
+        const termPrompt = '<span class="prompt">root@matrix:~$</span> ';
+        
+        function termPrint(html) {
+            document.getElementById('iterm-out').insertAdjacentHTML('beforeend', '<div class="terminal-output">' + html + '</div>');
+            document.getElementById('iterm-out').scrollTop = document.getElementById('iterm-out').scrollHeight;
+        }
+        
+        function termBanner() {
+            termPrint('🚀 <b>technoporada.net</b> — system online. Wpisz <b>help</b>.<br>' +
+                'h5n1@matrix: Uwaga: co drugi skrypt czegoś szuka. Nie pytaj czego.');
+        }
+        
+        function runCommand(raw) {
+            const line = raw.trim();
+            if (!line) return;
+            termPrint('<span class="prompt">' + line + '</span>');
+            
+            let cmd = line, arg = '';
+            const sp = line.indexOf(' ');
+            if (sp !== -1) { cmd = line.slice(0, sp); arg = line.slice(sp + 1); }
+            cmd = cmd.toLowerCase();
+            
+            let out = '';
+            switch (cmd) {
+                case 'help':
+                    out = 'DOSTĘPNE KOMENDY:<br>' +
+                        '  whoami — kim jestem<br>ls — katalog osobisty<br>projects — lista projektów<br>' +
+                        '  zofia — aktywuj asystentkę<br>hack — próbujesz to? serio?<br>sudo — coś nie tak jest...<br>' +
+                        '  matrix — oczyszczenie systemu<br>coffee — kofeina ma to do siebie...<br>' +
+                        '  clear — wyczyść<br>h5n1 — &#129504;<br>exit — pożegnanie';
+                    break;
+                case 'whoami':
+                    out = 'h5n1 — czasów IRC, ok. 2001.<br>Samouk. Testuję, kombinuję, optymalizuję.';
+                    break;
+                case 'ls':
+                    out = 'bukiet_skryptów/<br>mIRC_legendy.txt<br>archiwa_sys_ops/  (nie zaglądaj)<br>README.md  <span style="opacity:.5">— to się sam nie przeczyta</span>';
+                    break;
+                case 'projects':
+                    out = '<a href="https://github.com/technoporada/arek-bootstrap" style="color:var(--matrix-green)">arek-bootstrap</a> — self-setup<br>' +
+                        '<a href="https://github.com/technoporada/softhunt" style="color:var(--matrix-green)">softhunt</a> — darmowe gry<br>' +
+                        '<a href="https://github.com/technoporada/deal-collector" style="color:var(--matrix-green)">deal-collector</a> — okazje<br>' +
+                        '<a href="https://github.com/technoporada/matrix-hacker-dashboard" style="color:var(--matrix-green)">matrix-hacker-dashboard</a><br>' +
+                        '<a href="https://github.com/technoporada" style="color:var(--matrix-green)">...pełna lista</a>';
+                    break;
+                case 'zofia':
+                    out = 'Zofia TTS: "Dzień dobry, Arek. (coś tam cicho mruczy o 3 GB RAM)..." Głos: [wygenerowany]';
+                    break;
+                case 'hack':
+                    out = 'Błędne przekonanie: hakowanie = pisanie "hack" w terminalu.<br>Prawda: hakowanie = znalezienie starego hasła w /var.';
+                    break;
+                case 'sudo':
+                    out = '[sudo] hasło dla root: <b>******** </b><br>NIE. Nie podam ci hasła. To pułapka. Zawsze to pułapka.';
+                    break;
+                case 'matrix':
+                case 'clear':
+                    document.getElementById('iterm-out').innerHTML = '';
+                    termBanner();
+                    return;
+                case 'coffee':
+                    out = 'Wczytuję kawę... [##########] 100%<br>Napięcie systemowe: ZA DOWOLNIE WYSOKIE.';
+                    break;
+                case 'h5n1':
+                    out = '😉 Znalazłeś easter egg. To byłem ja. Cały czas to byłem ja.';
+                    break;
+                case 'exit':
+                    out = 'Wybacz, ale z matrixa nie ma wyjścia. Pigółkę wybraliśmy dawno temu.';
+                    break;
+                default:
+                    out = 'nieznana komenda: <b>' + line + '</b> — wpisz <b>help</b>';
+            }
+            termPrint(out);
+        }
+        
+        function initTerminal() {
+            const iterm = document.getElementById('iterm');
+            if (!iterm || iterm.dataset.init) return;
+            iterm.dataset.init = '1';
+            
+            const wrap = document.getElementById('iterm-input-wrap');
+            termBanner();
+            
+            function drawInput() {
+                wrap.textContent = termBuffer;
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                // only active when layer6 visible
+                const layer6 = document.getElementById('layer6');
+                if (!layer6 || !layer6.classList.contains('active')) return;
+                if (e.key === 'Escape') return;
+                
+                if (e.key === 'Enter') {
+                    const c = termBuffer;
+                    termBuffer = '';
+                    drawInput();
+                    termHistory.push(c);
+                    termHistPos = -1;
+                    runCommand(c);
+                } else if (e.key === 'Backspace') {
+                    termBuffer = termBuffer.slice(0, -1);
+                    drawInput();
+                } else if (e.key === 'ArrowUp') {
+                    if (termHistPos === -1) termHistPos = termHistory.length - 1;
+                    else if (termHistPos > 0) termHistPos--;
+                    if (termHistory.length) { termBuffer = termHistory[termHistPos] || ''; drawInput(); }
+                } else if (e.key === 'ArrowDown') {
+                    if (termHistPos < termHistory.length - 1) { termHistPos++; termBuffer = termHistory[termHistPos] || ''; drawInput(); }
+                    else { termHistPos = -1; termBuffer = ''; drawInput(); }
+                } else if (e.key.length === 1) {
+                    termBuffer += e.key;
+                    drawInput();
+                }
+            });
+        }
+        
+        // Konami code eagle egg: zmienia kolor matrixa na wściekłą czerwień
+        const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let konamiPos = 0;
+        document.addEventListener('keydown', function(e) {
+            const k = e.key === 'b' || e.key === 'a' ? e.key : e.key;
+            if (konami[konamiPos] === e.key) {
+                konamiPos++;
+                if (konamiPos === konami.length) {
+                    document.documentElement.style.setProperty('--matrix-green', '#ff0048');
+                    showModal('TRYB SMITHA: CZERWONY KOD', 3000);
+                    konamiPos = 0;
+                }
+            } else {
+                konamiPos = (e.key === 'ArrowUp') ? 1 : 0;
+            }
+        });
         
         // Initialize
         window.onload = function() {
