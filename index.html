@@ -2,17 +2,59 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>technoporada.github.io - restored</title>
+    <title>Russian Roulette - Symulacja</title>
     <style>
-        body {font-family: Arial, sans-serif; text-align: center; padding: 2rem; background: #f5f5f5; color: #333;}
-        .container {background: white; padding: 2rem; border-radius: 8px; max-width: 600px; margin: 0 auto;}
+        :root { --bg: #1a1a1a; --text: #e0e0e0; --red: #c0392b; --green: #27ae60; }
+        body {margin:0; padding:0; height:100vh; background:var(--bg); color:var(--text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+        .wheel {width:300px; height:300px; border:4px solid var(--red); border-radius:50%; position:relative; cursor:crosshair; background:linear-gradient(180deg, #2c3e50 0%, #1a1a1a 100%);}
+        .chamber {position:absolute; width:100%; height:100%; transform:rotate(-90deg); transition:transform 3s cubic-bezier(0.1, 0.7, 0.1, 1);}
+        .bullet {position:absolute; width:40px; height:40px; background:red; border-radius:50%; top:50%; left:50%; margin:-20px 0 0 -20px; box-shadow:0 0 20px rgba(255,0,0,0.5); z-index:10;}
+        .result {position:absolute; width:100%; height:100%; text-align:center; font-size:2rem; line-height:300px; color:#e74c3c; font-weight:bold; pointer-events:none;}
+        .btn {padding:15px 30px; background:red; color:white; border:none; border-radius:5px; font-size:1.2rem; cursor:pointer; margin-top:20px;}
+        .btn:hover {background:#a93226;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Strona restored</h1>
-        <p>Strona została przywrócona do stanu podstawowego. Dziękujemy za cierpliwość.</p>
-        <p><a href="https://github.com/technoporada">GitHub technoporada</a></p>
+    <div class="wheel" id="roulette">
+        <div class="chamber" id="chamber">
+            <div class="bullet" id="bullet"></div>
+        </div>
+        <div class="result" id="result">Następny strzał...</div>
     </div>
+    <button class="btn" id="spinBtn">SPIN (STRZAŁ)</button>
+
+    <script>
+        const chamber = document.getElementById('chamber');
+        const bullet = document.getElementById('bullet');
+        const result = document.getElementById('result');
+        const spinBtn = document.getElementById('spinBtn');
+        let spinning = false;
+
+        const positions = [
+            'KULA W KOMORZE 1 - KONIEC',
+            'KULA W KOMORZE 2 - KONIEC', 
+            'KULA W KOMORZE 3 - KONIEC',
+            'KULA W KOMORZE 4 - KONIEC',
+            'KULA W KOMORZE 5 - KONIEC',
+            'KULA W KOMORZE 6 - KONIEC (PRZEADACZY SIĘ DO BEZPIECZEŃSTWA)'
+        ];
+
+        spinBtn.addEventListener('click', () => {
+            if(spinning) return;
+            spinning = true;
+            const random = Math.floor(Math.random() * positions.length);
+            const rotateDeg = (random * 60) + (Math.random() * 30);
+            chamber.style.transition = 'transform 3s cubic-bezier(0.1, 0.7, 0.1, 1)';
+            chamber.style.transform = `rotate(${rotateDeg}deg)`;
+            
+            setTimeout(() => {
+                spinning = false;
+                result.innerHTML = positions[random];
+                setTimeout(() => {
+                    result.innerHTML = 'Gra zakończona. Bezpiecznie.';
+                }, 2000);
+            }, 3100);
+        });
+    </script>
 </body>
 </html>
