@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Głęboka Królicza Nora</title>
+    <title>Technoporada | Głęboka Królicza Nora — Portfolio</title>
     <style>
         :root {
             --matrix-green: #00ff41;
@@ -362,6 +362,45 @@
             to { opacity: 1; }
         }
         
+        /* Project grid */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 2em;
+        }
+        
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 14px 18px;
+            border: 1px solid var(--matrix-green);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: var(--matrix-green);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .project-card:hover {
+            background-color: rgba(0, 100, 0, 0.3);
+            box-shadow: 0 0 20px var(--matrix-green);
+            transform: translateY(-2px);
+        }
+        
+        .project-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            text-shadow: 0 0 8px var(--matrix-green);
+        }
+        
+        .project-desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+        
         /* Responsive design */
         @media (max-width: 768px) {
             .pill-choice {
@@ -516,6 +555,61 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <div class="rabbit-hole-layer" id="layer5">
+                <h2>Warstwa Piąta: Mój Kod</h2>
+                <div class="layer-content">
+                    <p>Za tym, co widać na powierzchni, kryje się prawdziwa praca — kod pisany i odkrywany. Samouk, piszę z AI jako asystentem, ale pomysły, architektura i weryfikacja zostają moje. Oto co buduję:</p>
+                    
+                    <div class="project-grid">
+                        <a class="project-card" href="https://github.com/technoporada/arek-bootstrap">
+                            <span class="project-name">arek-bootstrap</span>
+                            <span class="project-desc">Self-setup: jeden skrypt stawia projekt od zera + generator nowych</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/softhunt">
+                            <span class="project-name">softhunt</span>
+                            <span class="project-desc">Agregator darmowych gier — Steam, Epic, itch, Reddit</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/deal-collector">
+                            <span class="project-name">deal-collector</span>
+                            <span class="project-desc">Asynchroniczny agregator okazji — SteamDB, Epic, GOG</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/matrix-hacker-dashboard">
+                            <span class="project-name">matrix-hacker-dashboard</span>
+                            <span class="project-desc">Recon dashboard: Node.js API + React, security-first</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/arek-scan-suite-demo">
+                            <span class="project-name">arek-scan-suite-demo</span>
+                            <span class="project-desc">Edukacyjny skaner portów — tylko własne sieci</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/Zofia_TTS_assistant">
+                            <span class="project-name">Zofia TTS</span>
+                            <span class="project-desc">Polski asystent głosowy na Ollamie — lokalne AI</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/ArekBox-Installer">
+                            <span class="project-name">ArekBox-Installer</span>
+                            <span class="project-desc">Modularny toolkit dla Linuxa — AI, Dev, Multimedia</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/windows-security-toolkit">
+                            <span class="project-name">windows-security-toolkit</span>
+                            <span class="project-desc">PowerShell: malware scan, registry repair</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/persona-arena">
+                            <span class="project-name">persona-arena</span>
+                            <span class="project-desc">Arena walki AI person z TTS</span>
+                        </a>
+                        <a class="project-card" href="https://github.com/technoporada/arekboxJP">
+                            <span class="project-name">arekboxJP</span>
+                            <span class="project-desc">Japońska edycja narzędzi systemowych</span>
+                        </a>
+                    </div>
+                    
+                    <p style="margin-top:2em;text-align:center;">
+                        Więcej na <a href="https://github.com/technoporada" style="color:var(--matrix-green);text-decoration:underline;">github.com/technoporada</a> ·
+                        Galeria AI-generated: <a href="images/ai.html" style="color:var(--matrix-green);text-decoration:underline;">ZOBACZ [AI]</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -680,6 +774,9 @@
                             break;
                         case 3:
                             showModal('PEŁNE PRZEBUDZENIE OSIĄGNIĘTE', 2000);
+                            break;
+                        case 4:
+                            showModal('WITAJ W MOIM KODZIE', 2000);
                             break;
                     }
                 }, 6000 * index);
