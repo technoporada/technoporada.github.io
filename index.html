@@ -2,26 +2,146 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Technoporada – bez sztucznego dymu</title>
+    <title>Ruska Ruletka - Edycja Bezpieczna</title>
     <style>
-        body,html { margin:0; padding:0; height:100%; font-family: 'Courier New', monospace; background: #1a1a1a; color: #ff0000; overflow-x:hidden; text-align:center; }
-        .content { padding:2rem; max-width:800px; margin:0 auto; }
-        h1 { font-size:2rem; margin:1rem 0; color:#ff0000; }
-        p { font-size:1.2rem; line-height:1.6; margin:1rem 0; }
-        a { color:#00ff00; text-decoration:none; }
-        a:hover { color:#ffff00; }
+        :root {
+            --red: #e74c3c;
+            --black: #2c3e50;
+            --green: #2ecc71;
+            --wheel-width: 400px;
+            --wheel-height: 400px;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .wheel-container {
+            position: relative;
+            width: var(--wheel-width);
+            height: var(--wheel-height);
+            transform: rotate(-90deg);
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #e74c3c 0deg 12.5deg,
+                #2c3e50 12.5deg 25deg,
+                #ecf0f1 25deg 37.5deg,
+                #27ae60 37.5deg 50deg,
+                #e67e22 50deg 62.5deg,
+                #9b59b6 62.5deg 75deg,
+                #e74c3c 75deg 87.5deg,
+                #2c3e50 87.5deg 100deg
+            );
+            width: 100%;
+            height: 100%;
+            border: 8px solid #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .number {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            color: #1a1a1a;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        .spin-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background: #e74c3c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .spin-btn:hover {
+            background: #c0392b;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+            min-height: 30px;
+        }
+        .prize {
+            color: #f1c40f;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="content">
-        <h1>kurwa wszystkich inżynierów z jebanej doliny krzemowej kurwy szmaty jebane</h1>
-        <p>ai uposledzone piecejki ktore nie potrafią napisać ani jednej linii kodu bez wstawiania sztucznego "matrix" na start by ukryć brak mózgu</p>
-        <p>wolę prostego linuxa i dobrego niżta niż tę jebaną sztuczkę</p>
-        <p>kolejny prożekt do wysłuchania kurwa</p>
-        <div style="margin-top:2rem;">
-            <a href="https://github.com/technoporada">technoporada na GitHubie</a> –
-            <a href="https://technoporada.github.io">strona bez matrixa</a>
+    <div class="wheel-container" id="wheel">
+        <div class="wheel" id="spin-wheel">
+            <div class="number" style="transform: rotate(0deg) translate(180px) rotate(0deg);">1</div>
+            <div class="number" style="transform: rotate(45deg) translate(180px) rotate(-45deg);">2</div>
+            <div class="number" style="transform: rotate(90deg) translate(180px) rotate(-90deg);">3</div>
+            <div class="number" style="transform: rotate(135deg) translate(180px) rotate(-135deg);">4</div>
+            <div class="number" style="transform: rotate(180deg) translate(180px) rotate(180deg);">5</div>
+            <div class="number" style="transform: rotate(225deg) translate(180px) rotate(-225deg);">6</div>
+            <div class="number" style="transform: rotate(270deg) translate(180px) rotate(-270deg);">7</div>
+            <div class="number" style="transform: rotate(315deg) translate(180px) rotate(-315deg);">8</div>
         </div>
     </div>
+    <button class="spin-btn" id="spin-btn">SPIN</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        const btn = document.getElementById('spin-btn');
+        const result = document.getElementById('result');
+        const wheel = document.getElementById('spin-wheel');
+        let isSpinning = false;
+
+        btn.addEventListener('click', () => {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            // Losowy kąt rotacji (8 możliwych wyników)
+            const outcomes = [
+                'WYGRANA: 100 złotych!',
+                'WYGRANA: Świetny dzień!',
+                'WYGRANA: Kawa na dom!',
+                'WYGRANA: Pozytywna energia!',
+                'WYGRANA: Pora na przerwę!',
+                'WYGRANA: Uśmiech się!',
+                'WYGRANA: Czegoś ciekawego!',
+                'WYGRANA: Dobre nastroje!'
+            ];
+
+            const randomIndex = Math.floor(Math.random() * outcomes.length);
+            const rotations = 5 + Math.random() * 5 + randomIndex;
+            const totalDegrees = rotations * 360;
+
+            wheel.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+            wheel.style.transform = `rotate(${totalDegrees}deg)`;
+
+            // Po animacji pokazuj wynik
+            setTimeout(() => {
+                isSpinning = false;
+                result.innerHTML = `<span class="prize">${outcomes[randomIndex]}</span>`;
+            }, 4100);
+        });
+    </script>
 </body>
 </html>
