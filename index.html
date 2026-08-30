@@ -2,73 +2,26 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Technoporada – portfolio</title>
+    <title>Technoporada – bez sztucznego dymu</title>
     <style>
-        :root { --matrix-green: #00ff41; --matrix-dark: #001a00; }
-        body,html { margin:0; padding:0; height:100%; font-family: 'Courier New', monospace; background: var(--matrix-dark); color: var(--matrix-green); overflow-x:hidden; }
-        #matrix-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
-        .container { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:1rem; }
-        h1 { text-align:center; margin:1rem 0; }
-        .intro { text-align:center; margin:1rem 0; opacity:0.8; }
-        .projects { display:grid; grid-template-columns:repeat(auto-fill, 180px); gap:1rem; margin:2rem 0; max-width:900px; width:100%; }
-        .project { background:#001a00; border:1px solid var(--matrix-green); color:var(--matrix-green); padding:0.8rem; border-radius:5px; text-decoration:none; transition:all .3s; }
-        .project:hover { background:#00ff41; color:#000; }
-        terminal { width:100%; max-width:800px; background:#000; border:1px solid var(--matrix-green); color:var(--matrix-green); padding:1rem; margin:2rem 0; font-family:monospace; }
-        .hint { opacity:0.5; font-size:0.85rem; }
+        body,html { margin:0; padding:0; height:100%; font-family: 'Courier New', monospace; background: #1a1a1a; color: #ff0000; overflow-x:hidden; text-align:center; }
+        .content { padding:2rem; max-width:800px; margin:0 auto; }
+        h1 { font-size:2rem; margin:1rem 0; color:#ff0000; }
+        p { font-size:1.2rem; line-height:1.6; margin:1rem 0; }
+        a { color:#00ff00; text-decoration:none; }
+        a:hover { color:#ffff00; }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-    <div class="container">
-        <h1>Technoporada – portfolio</h1>
-        <p class="intro">Samouk, automatyzacja, Linux/Windows, lokalne AI. Open to work.</p>
-
-        <div class="projects">
-            <a class="project" href="https://github.com/technoporada/arek-bootstrap">arek-bootstrap</a>
-            <a class="project" href="https://github.com/technoporada/softhunt">softhunt</a>
-            <a class="project" href="https://github.com/technoporada/deal-collector">deal-collector</a>
-            <a class="project" href="https://github.com/technoporada/matrix-hacker-dashboard">matrix-hacker-dashboard</a>
-            <a class="project" href="https://github.com/technoporada/arek-scan-suite-demo">arek-scan-suite-demo</a>
-            <a class="project" href="https://github.com/technoporada/Zofia_TTS_assistant">Zofia TTS</a>
+    <div class="content">
+        <h1>kurwa wszystkich inżynierów z jebanej doliny krzemowej kurwy szmaty jebane</h1>
+        <p>ai uposledzone piecejki ktore nie potrafią napisać ani jednej linii kodu bez wstawiania sztucznego "matrix" na start by ukryć brak mózgu</p>
+        <p>wolę prostego linuxa i dobrego niżta niż tę jebaną sztuczkę</p>
+        <p>kolejny prożekt do wysłuchania kurwa</p>
+        <div style="margin-top:2rem;">
+            <a href="https://github.com/technoporada">technoporada na GitHubie</a> –
+            <a href="https://technoporada.github.io">strona bez matrixa</a>
         </div>
-
-        <terminal id="terminal" spellcheck="false"></terminal>
     </div>
-
-    <script>
-        // Matrix canvas (delikatne tło)
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const symbols = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~';
-        const all = katakana + latin + nums + symbols;
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const raindrops = [];
-        for (let x = 0; x < columns; x++) raindrops[x] = 1;
-        function drawMatrix(){
-            ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = '#0f0'; ctx.font = fontSize+'px monospace';
-            for (let i = 0; i < raindrops.length; i++) {
-                const text = all.charAt(Math.floor(Math.random()*all.length));
-                ctx.fillText(text, i*fontSize, raindrops[i]*fontSize);
-                if (raindrops[i]*fontSize > canvas.height && Math.random()>0.975) raindrops[i]=0;
-                raindrops[i]++;
-            }
-        }
-        function animate(){ drawMatrix(); requestAnimationFrame(animate); }
-        window.onload = ()=>{ animate(); canvas.width = window.innerWidth; canvas.height = window.innerHeight; window.onresize = ()=>{ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }};
-
-        // Interactive terminal
-        let term=''; const el=document.getElementById('terminal'); constprompt='root@matrix:~$ ';
-        function termPrint(s){ el.innerHTML+='<div>'+s+'</div>'; el.scrollTop=el.scrollHeight; }
-        function runCommand(raw){ const line=raw.trim(); if(!line)return; termPrint('<span class="prompt">'+line+'</span>'); let cmd=line.toLowerCase(),arg=''; const sp=line.indexOf(' '); if(sp!==-1){ cmd=line.slice(0,sp); arg=line.slice(sp+1); } let out=''; switch(cmd){ case 'help': out='help | whoami | ls | projects | zofia | hack | sudo | matrix | coffee | clear | h5n1 | exit'; break; case 'whoami': out='h5n1 – czasów IRC, samouk, piszę z AI.'; break; case 'ls': out='bukiet_skryptów/ mIRC_legendy.txt'; break; case 'projects': out='ark-bootstrap, softhunt, deal-collector, matrix-hacker-dashboard, arek-scan-suite-demo, Zofia TTS'; break; case 'sudo': out='[sudo] hasło: NIE. To pułapka.'; break; case 'matrix': case 'clear': el.innerHTML=''; termPrint('System oczyszczony.'); return; case 'h5n1': out='😉 Easter egg – wiesz, kto to pisze.'; break; case 'exit': out='Do widzenia!'; break; default: out='nieznana komenda: '+line; } termPrint(out); }
-        document.addEventListener('keydown',e=>{ if(e.key==='Enter'){ const c=term; term=''; termPrint('<span class="prompt">'+c+'</span>'); runCommand(c); } else if(e.key==='Backspace'){ term=term.slice(0,-1); } else if(e.key.length===1){ term+=e.key; } });
-        termPrint('Wpisz help, aby zobaczyć komendy.');
-    </script>
 </body>
 </html>
