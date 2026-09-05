@@ -2,59 +2,187 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Russian Roulette - Symulacja</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>h5n1 / technoporada — portfolio</title>
     <style>
-        :root { --bg: #1a1a1a; --text: #e0e0e0; --red: #c0392b; --green: #27ae60; }
-        body {margin:0; padding:0; height:100vh; background:var(--bg); color:var(--text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center;}
-        .wheel {width:300px; height:300px; border:4px solid var(--red); border-radius:50%; position:relative; cursor:crosshair; background:linear-gradient(180deg, #2c3e50 0%, #1a1a1a 100%);}
-        .chamber {position:absolute; width:100%; height:100%; transform:rotate(-90deg); transition:transform 3s cubic-bezier(0.1, 0.7, 0.1, 1);}
-        .bullet {position:absolute; width:40px; height:40px; background:red; border-radius:50%; top:50%; left:50%; margin:-20px 0 0 -20px; box-shadow:0 0 20px rgba(255,0,0,0.5); z-index:10;}
-        .result {position:absolute; width:100%; height:100%; text-align:center; font-size:2rem; line-height:300px; color:#e74c3c; font-weight:bold; pointer-events:none;}
-        .btn {padding:15px 30px; background:red; color:white; border:none; border-radius:5px; font-size:1.2rem; cursor:pointer; margin-top:20px;}
-        .btn:hover {background:#a93226;}
+        :root {
+            --green: #00ff41;
+            --green-dim: #00a82e;
+            --bg: #050805;
+            --panel: #0a0f0a;
+            --border: #123a18;
+            --text: #c8ffd0;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Lucida Console", "Consolas", monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        canvas#rain {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+        }
+        header { margin-bottom: 40px; }
+        .tag { color: var(--green); font-size: 0.8rem; letter-spacing: 2px; }
+        h1 {
+            font-size: 2rem;
+            color: var(--green);
+            text-shadow: 0 0 12px var(--green-dim);
+            margin: 6px 0 12px;
+        }
+        .blink { animation: bl 1.2s infinite; }
+        @keyframes bl { 50% { opacity: 0; } }
+        .lead { max-width: 640px; line-height: 1.6; color: #9fd8a8; }
+        .section { margin: 36px 0; }
+        h2 {
+            color: var(--green);
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+        }
+        .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover { border-color: var(--green); transform: translateY(-2px); }
+        .card h3 { font-size: 0.95rem; color: var(--green); margin-bottom: 6px; }
+        .card h3 a { color: inherit; text-decoration: none; }
+        .card p { font-size: 0.8rem; line-height: 1.5; color: #9fd8a8; }
+        .card .tags { margin-top: 8px; font-size: 0.7rem; color: var(--green-dim); }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chips span {
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+        }
+        .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+        .links a {
+            color: var(--green);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .links a:hover { background: var(--panel); }
+        footer { margin-top: 48px; font-size: 0.75rem; color: #5fae6b; line-height: 1.6; }
+        .prompt { color: var(--green-dim); }
     </style>
 </head>
 <body>
-    <div class="wheel" id="roulette">
-        <div class="chamber" id="chamber">
-            <div class="bullet" id="bullet"></div>
-        </div>
-        <div class="result" id="result">Następny strzał...</div>
-    </div>
-    <button class="btn" id="spinBtn">SPIN (STRZAŁ)</button>
+    <canvas id="rain"></canvas>
+    <main>
+        <header>
+            <div class="tag">$ whoami</div>
+            <h1>h5n1 <span class="blink">█</span></h1>
+            <p class="lead">
+                Samouk. Skrypty od mIRC-a (2001) przez PowerShell, bash, Pythona po TypeScript.
+                Buduję z AI, ale lokalnie, offline-first i bez funduszy. Kod nie jest pisany — jest odkrywany.
+            </p>
+        </header>
+
+        <section class="section">
+            <h2>// projekty — flagowce</h2>
+            <div class="cards">
+                <div class="card">
+                    <h3><a href="https://github.com/technoporada/persona-arena-versus">persona-arena-versus</a></h3>
+                    <p>Arena walki AI person — LLM scoring, macierz ocen, werdykty, TTS. CLI + Gradio, robustny parser JSON, mock backend na dema.</p>
+                    <div class="chips tags"><span>LLM</span><span>Gradio</span><span>TTS</span><span>Python</span></div>
+                </div>
+                <div class="card">
+                    <h3><a href="https://github.com/technoporada/softhunt">softhunt</a></h3>
+                    <p>Agregator darmowych gier — Steam, Epic, itch, Reddit. FastAPI + SQLite, web UI + CLI.</p>
+                    <div class="chips tags"><span>FastAPI</span><span>SQLite</span><span>scraping</span></div>
+                </div>
+                <div class="card">
+                    <h3><a href="https://github.com/technoporada/awesome-core">awesome-core</a></h3>
+                    <p>Offline tool manager — 234k narzędzi z awesome list, 2k repo. Trzy interfejsy (CLI/TUI/Web), dane pobierane przy pierwszym uruchomieniu.</p>
+                    <div class="chips tags"><span>offline</span><span>Python</span><span>CLI/TUI/Web</span></div>
+                </div>
+                <div class="card">
+                    <h3><a href="https://github.com/technoporada/matrix-command">matrix-command</a></h3>
+                    <p>Security recon dashboard — FastAPI + Matrix rain UI, scrapers, usługi sieciowe i prywatność.</p>
+                    <div class="chips tags"><span>FastAPI</span><span>security</span><span>dashboard</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>// inne eksperymenty</h2>
+            <div class="links">
+                <a href="https://github.com/technoporada/arek-bootstrap">arek-bootstrap</a>
+                <a href="https://github.com/technoporada/deal-collector">deal-collector</a>
+                <a href="https://github.com/technoporada/ArekBox-Installer">ArekBox</a>
+                <a href="https://github.com/technoporada/Zofia_TTS_assistant">Zofia TTS</a>
+                <a href="https://github.com/technoporada/windows-security-toolkit">win-security-toolkit</a>
+                <a href="images/ai.html">galeria AI</a>
+                <a href="roulette.html">ruletka (zabawa)</a>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>// kontakt</h2>
+            <p class="lead">Brak social media. Temat warty uwagi? Otwórz issue na GitHubie.</p>
+            <div class="links">
+                <a href="https://github.com/technoporada">github/technoporada</a>
+                <a href="https://technoporada.github.io">tutaj</a>
+            </div>
+        </section>
+
+        <footer>
+            <span class="prompt">$</span> echo "Prawdziwy kod nie jest pisany, lecz odkrywany."
+        </footer>
+    </main>
 
     <script>
-        const chamber = document.getElementById('chamber');
-        const bullet = document.getElementById('bullet');
-        const result = document.getElementById('result');
-        const spinBtn = document.getElementById('spinBtn');
-        let spinning = false;
+        const canvas = document.getElementById('rain');
+        const ctx = canvas.getContext('2d');
+        let w, h, cols, drops, fontSize = 14;
 
-        const positions = [
-            'KULA W KOMORZE 1 - KONIEC',
-            'KULA W KOMORZE 2 - KONIEC', 
-            'KULA W KOMORZE 3 - KONIEC',
-            'KULA W KOMORZE 4 - KONIEC',
-            'KULA W KOMORZE 5 - KONIEC',
-            'KULA W KOMORZE 6 - KONIEC (PRZEADACZY SIĘ DO BEZPIECZEŃSTWA)'
-        ];
+        function resize() {
+            w = canvas.width = innerWidth;
+            h = canvas.height = innerHeight;
+            cols = Math.floor(w / fontSize);
+            drops = Array(cols).fill(1);
+        }
+        resize();
+        addEventListener('resize', resize);
 
-        spinBtn.addEventListener('click', () => {
-            if(spinning) return;
-            spinning = true;
-            const random = Math.floor(Math.random() * positions.length);
-            const rotateDeg = (random * 60) + (Math.random() * 30);
-            chamber.style.transition = 'transform 3s cubic-bezier(0.1, 0.7, 0.1, 1)';
-            chamber.style.transform = `rotate(${rotateDeg}deg)`;
-            
-            setTimeout(() => {
-                spinning = false;
-                result.innerHTML = positions[random];
-                setTimeout(() => {
-                    result.innerHTML = 'Gra zakończona. Bezpiecznie.';
-                }, 2000);
-            }, 3100);
-        });
+        const glyphs = 'アカサタナハマヤラワ01<>$#/';
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(5, 8, 5, 0.08)';
+            ctx.fillRect(0, 0, w, h);
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < cols; i++) {
+                const ch = glyphs[Math.floor(Math.random() * glyphs.length)];
+                ctx.fillStyle = 'rgba(0, 255, 65, 0.8)';
+                ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > h && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }, 60);
     </script>
 </body>
 </html>
