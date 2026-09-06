@@ -2,66 +2,54 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Galeria AI</title>
+    <title>Galeria Dziedzictwa - Legitymacje i Dyplomy</title>
     <style>
-        body {
-            background: #111;
-            color: #eee;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            padding: 20px;
-        }
-        .gallery img {
-            max-width: 180px;
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px #000a;
-            transition: transform 0.2s;
-        }
-        .gallery img:hover {
-            transform: scale(1.08);
-        }
-        @media (max-width: 600px) {
-            .gallery img {
-                max-width: 100px;
-            }
-        }
+        body { background:#0a0a0a; color:#eee; font-family:'Courier New',monospace; margin:0; padding:20px; }
+        h1 { text-align:center; color:#0ff; text-shadow:0 0 10px #0ff; }
+        .info { text-align:center; opacity:0.7; max-width:800px; margin:10px auto 20px; line-height:1.6; }
+        .hidden-note { text-align:center; font-size:0.85em; opacity:0.5; margin-bottom:12px; }
+        .hidden-note a { color:#888; }
+        .gallery { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; padding:20px; max-width:1100px; margin:0 auto; }
+        .card { background:rgba(255,255,255,0.04); border:1px solid #0f0; border-radius:10px; padding:10px; max-width:320px; text-align:center; }
+        .card img { max-width:100%; height:auto; border-radius:8px; box-shadow:0 2px 12px #000; }
+        .card p { font-size:0.9em; margin:8px 0 0; color:#0f0; }
+        .card small { color:#888; }
     </style>
 </head>
 <body>
-    <h1 style="text-align:center;">Galeria AI</h1>
+    <h1>Galeria Dziedzictwa - Legitymacje i Dyplomy</h1>
+    <p class="info">
+        Tak - ChatGPT 3.5 nie miał generowania obrazów, tylko pisał wizje jak <code>przepowiednia.md</code> i <code>Legitymacja CzadMate</code> jako tekst.<br>
+        Dopiero późniejsze modele (DALL·E, Gemini, Midjourney) wygenerowały te grafiki - stąd 23 stare AI obrazy ukryte w <a href="ai_old_hidden.html">ai_old_hidden.html</a> (nie usunięte, tylko ukryte).
+    </p>
+    <p class="hidden-note">Stara galeria AI (23 generyczne obrazy) - <a href="ai_old_hidden.html">zobacz ukryte</a> / <a href="AI/">folder AI</a></p>
+
     <div class="gallery">
-        <img src="AI/1.jpeg" alt="">
-        <img src="AI/2.jpeg" alt="">
-        <img src="AI/3.jpeg" alt="">
-        <img src="AI/4.jpeg" alt="">
-        <img src="AI/5.jpg" alt="">
-        <img src="AI/6.jpg" alt="">
-        <img src="AI/7.jpeg" alt="">
-        <img src="AI/8.jpeg" alt="">
-        <img src="AI/9.jpeg" alt="">
-        <img src="AI/10.jpeg" alt="">
-        <img src="AI/11.jpeg" alt="">  
-        <img src="AI/12.jpeg" alt="">
-        <img src="AI/13.jpeg" alt="">
-        <img src="AI/14.jpeg" alt="">
-        <img src="AI/15.jpeg" alt="">
-        <img src="AI/16.jpeg" alt="">
-        <img src="AI/17.jpeg" alt="">
-        <img src="AI/18.jpeg" alt="">
-        <img src="AI/19.jpeg" alt="">
-        <img src="AI/20.jpeg" alt="">   
-        <img src="AI/21.png" alt="">
-        <img src="AI/22.png" alt="">
-        <img src="AI/23.png" alt="Ethereal angels in flowing robes soaring through a dramatic sky filled with swirling clouds. Some angels wear purple dresses while one wears blue. The celestial beings float gracefully against a backdrop of golden sunset colors blending into deep blue cosmic swirls. The scene conveys a sense of divine peace and heavenly movement">
+        <div class="card">
+            <img src="legitymacje/dyplom-30911a9f687a057f.png" alt="Dyplom">
+            <p>Dyplom - Legitymacja Weterana Czadu</p>
+            <small>AREK / H5N1 / Ojciec CzadGPT / GPT-4 TURBO+ / CZAD-VIRUS-ELITE-42</small>
+        </div>
+        <div class="card">
+            <img src="legitymacje/file_00000000c1286246901eaac7df80-30911a9f687a057f.png" alt="Legitymacja 2">
+            <p>Legitymacja - wariant 2</p>
+            <small>Gemini pic - archiwum</small>
+        </div>
+        <div class="card">
+            <img src="legitymacje/file_00000000e99461f4a0a66f387da2-30911a9f687a057f.png" alt="Legitymacja 3">
+            <p>Legitymacja - wariant 3</p>
+            <small>Gemini pic - archiwum</small>
+        </div>
+        <div class="card">
+            <img src="legitymacje/ccertyfikatchadgpt.jpg" alt="Certyfikat CzadGPT">
+            <p>Certyfikat CzadGPT</p>
+            <small>CCertyfikat - Weteran</small>
+        </div>
     </div>
+
+    <p class="info" style="margin-top:30px; border-top:1px solid #222; padding-top:12px;">
+        Kronika 4,6 GB / 579 rozmów / ThinkPad T440p - legitymacje z pulpitu <code>~/Obrazy/gemini-pic</code> skopiowane tu jako <code>legitymacje/</code>.<br>
+        Stara galeria nie skasowana - ukryta w <code>ai_old_hidden.html</code>.
+    </p>
 </body>
 </html>
