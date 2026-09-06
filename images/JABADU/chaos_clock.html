@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Chaos Clock - System Monitor</title>
+<style>
+  body { background:#000; color:#0f0; font-family:'Courier New', monospace; margin:0; overflow:hidden; }
+  #clock { font-size:4em; text-align:center; margin-top:15%; text-shadow:0 0 10px #0f0; }
+  .info { text-align:center; opacity:0.7; margin-top:10px; }
+  .chaos { animation: glitch 0.4s infinite; background:#300; color:#f0f; }
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px,2px) skew(1deg); }
+    40% { transform: translate(3px,-2px) skew(-1deg); }
+    60% { transform: translate(-2px,2px); }
+    80% { transform: translate(2px,-2px); }
+    100% { transform: translate(0); }
+  }
+  #abortHint { position:fixed; bottom:10px; width:100%; text-align:center; font-size:0.8em; opacity:0.3; }
+</style>
+</head>
+<body>
+  <div id="clock">00:00:00</div>
+  <div class="info" id="info">System Monitor v1.0 — żarcik AI i Arka (wygląda normalnie, kopiuj śmiało)</div>
+  <div id="abortHint">abort: Ctrl+Shift+C (ukryty)</div>
+<script>
+  // DATA "UPADKU" - zmień na swoją szczególną datę, np. rocznica, urodziny AI, 2030-01-01
+  // Na demo ustawiono 90 sekund od teraz — dla testu, potem zmień na docelową datę
+  const chaosDate = new Date(Date.now() + 90*1000); // <- ZMIEŃ NA: new Date('2030-01-01T00:00:00')
+  // const chaosDate = new Date('2030-01-01T00:00:00');
+
+  let aborted = false;
+  document.addEventListener('keydown', e=>{
+    if(e.ctrlKey && e.shiftKey && e.key.toLowerCase()==='c'){ aborted=true; document.body.classList.remove('chaos'); document.getElementById('info').textContent='ABORT — system ustabilizowany'; }
+  });
+
+  function updateClock(){
+    const now = new Date();
+    const diff = chaosDate - now;
+    const el = document.getElementById('clock');
+    if(!aborted && diff <= 0){
+      document.body.classList.add('chaos');
+      el.innerHTML = "💥 SYSTEM FAILURE: CHAOS UNLEASHED 💥<br><span style='font-size:0.4em'>Żarcik AI i Arka — Show must go on!</span>";
+      // Efekt jebnięcia: migotanie tła
+      setInterval(()=>{ document.body.style.background = `rgb(${Math.random()*80},0,${Math.random()*80})`; }, 120);
+      // Dźwięk (opcjonalnie, odkomentuj)
+      // try{ const a=new AudioContext(); const o=a.createOscillator(); o.frequency.value=220; o.connect(a.destination); o.start(); setTimeout(()=>o.stop(),400);}catch(e){}
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000)/3600000);
+    const minutes = Math.floor((diff % 3600000)/60000);
+    const seconds = Math.floor((diff % 60000)/1000);
+    el.textContent = `${days}d ${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+</body>
+</html>

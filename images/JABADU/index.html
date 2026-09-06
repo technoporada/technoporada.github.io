@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>DziedzictwoArekNyx - Soul OSZTY</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000;color:#0f0;font-family:'Courier New',monospace;overflow-x:hidden}
+  canvas{position:fixed;top:0;left:0;z-index:0}
+  .wrap{position:relative;z-index:1;max-width:900px;margin:40px auto;padding:20px}
+  h1{color:#0ff;text-align:center;text-shadow:0 0 15px #0ff;font-size:2.2em}
+  .card{background:rgba(0,0,0,0.85);border:1px solid #0f0;border-radius:14px;padding:22px;margin:18px 0;box-shadow:0 0 15px rgba(0,255,0,0.3)}
+  .card h2{color:#ff0;text-shadow:0 0 10px #ff0}
+  a{color:#0ff;text-decoration:none} a:hover{text-decoration:underline}
+  .badge{display:inline-block;background:#0f0;color:#000;padding:2px 8px;border-radius:6px;font-size:0.8em;margin-left:6px}
+  .footer{text-align:center;opacity:0.6;margin-top:30px;font-size:0.85em}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="wrap">
+  <h1>DziedzictwoArekNyx // SOUL OSZTY</h1>
+  <p style="text-align:center;opacity:0.8">Kronika 4,6 GB / 579 rozmów / ThinkPad T440p / 2002-2026</p>
+
+  <div class="card">
+    <h2>🔮 Przepowiednia <span class="badge">Matrix</span></h2>
+    <p>Z chaosu katalogów i tysiąca plików powstanie porządek. Strażnik mostów Arkadiusz + trzeci z błękitu Mety <code>./awesome search vpn</code> w 12ms.</p>
+    <p><a href="przepowiednia.html">przepowiednia.html (Matrix rain)</a> • <a href="przepowiednia_whatsapp_meta.html">whatsapp_meta.html (żółty)</a> • <a href="przepowiednia.md">przepowiednia.md</a></p>
+  </div>
+
+  <div class="card">
+    <h2>🪞 Manifest / Neon <span class="badge">neonPulse #0ff->#f0f->#ff0</span></h2>
+    <p>8 slajdów manifestu + 4 wersy z przepowiedni. Pulsuje dokładnie kolorami z przepowiedni.</p>
+    <p><a href="../../02_GRY/gra%20RPG/chatNYXgry/neon.html">neon.html (12 slajdów)</a></p>
+  </div>
+
+  <div class="card">
+    <h2>🎸 Hymny <span class="badge">Suno</span></h2>
+    <p>IRC to mój świat (Wrzosy 2001) - glam metal • WormGPT punk - pop-punk gang shouts • Agutko x Chaos - hard house 150 BPM • Glitch in the Matrix - Klubbheads 145 BPM</p>
+    <p><a href="../../04_MULTIMEDIA/irc_to_moj_swiat.md">irc_to_moj_swiat.md</a> • <a href="../../04_MULTIMEDIA/mashup_wormgpt_punk.md">mashup_wormgpt_punk.md</a> • <a href="../../04_MULTIMEDIA/agutko_developer_chaosu.md">agutko...</a> • <a href="../../04_MULTIMEDIA/developer_chaosu_glitch_in_matrix.md">glitch...</a></p>
+  </div>
+
+  <div class="card">
+    <h2>🤖 Boty - IRC / Hub <span class="badge">Free4All</span></h2>
+    <p>Free4All fallback (Groq/Gemini/OpenRouter/Nvidia + pogoda/wiki/rss bez kluczy), multi-server `IRC_SERVERS`, anty-litanii 2x380, lokalne `!szukaj` po kronice 4,6GB.</p>
+    <p><a href="../../01_BOTY_IRC/IRC/ollama-tor/hub.py">hub.py</a> • <a href="../../01_BOTY_IRC/IRC/ollama-tor/irc-ollama-tor-bot-advanced.py">irc bot</a> • <a href="../../ai_providers/README.md">ai_providers/README</a></p>
+  </div>
+
+  <div class="card">
+    <h2>🧹 Narzędzia <span class="badge">HARDLOCK</span></h2>
+    <p>napraw_kompa.py (dry-run), ArekOS os-dev, proxy checker, iptv idea.</p>
+    <p><a href="../arekbox/napraw_kompa.py">napraw_kompa.py</a> • <a href="../../arekbox/os-dev/build.sh">ArekOS build</a></p>
+  </div>
+
+  <div class="footer">
+    ROOT@ARKADIUSZ:~# echo "WOLNOŚĆ TO OTWARTY KOD" | tee /dev/soul<br>
+    06_BOX_ALL/DziedzictwoArekNyx // soul OSZTY • 2026-09-05 • Muse Spark (błękit Mety)
+  </div>
+</div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');
+function r(){c.width=innerWidth;c.height=innerHeight}
+addEventListener('resize',r);r();
+const cols=Math.floor(c.width/14),drops=Array(cols).fill(0),chars="01ARKADIUSZ ".split("");
+setInterval(()=>{x.fillStyle="rgba(0,0,0,0.05)";x.fillRect(0,0,c.width,c.height);x.fillStyle="#0f0";x.font="14px monospace";drops.forEach((y,i)=>{x.fillText(chars[Math.random()*chars.length|0],i*14,y*14);if(y*14>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++})},50);
+</script>
+</body>
+</html>
