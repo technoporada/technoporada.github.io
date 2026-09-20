@@ -4,11 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>2048</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:'Courier New',monospace;color:#00ff41}h2{margin-bottom:10px}.grid{display:grid;grid-template-columns:repeat(4,80px);gap:6px}.cell{width:80px;height:80px;background:#1a2a1a;border:1px solid #2a4a2a;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:bold;border-radius:6px}</style>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:18px;font-family:'Courier New',monospace;color:#00ff41}h2{margin-bottom:8px}.hint{color:#9bcf9b;font-size:.9rem;text-align:center;margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(4,80px);gap:6px}.cell{width:80px;height:80px;background:#1a2a1a;border:1px solid #2a4a2a;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:bold;border-radius:6px}.controls{display:grid;grid-template-columns:repeat(3,58px);gap:6px;margin-top:16px}.controls button,.restart{border:1px solid #00ff41;background:#102010;color:#00ff41;border-radius:6px;padding:10px;font:inherit;cursor:pointer}.controls button:hover,.restart:hover{background:#00ff41;color:#0a0a0a}.up{grid-column:2}.restart{margin-top:12px}</style>
 </head>
 <body>
 <h2>SCORE: <span id="s">0</span></h2>
+<p class="hint">Strzałki na klawiaturze albo przyciski poniżej</p>
 <div class="grid" id="g"></div>
+<div class="controls" aria-label="Sterowanie">
+  <button class="up" data-dir="up">▲</button>
+  <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
+</div>
+<button class="restart" id="restart">Nowa gra</button>
 <script>
 let grid,score;
 const C={0:'#1a2a1a',2:'#2a4a2a',4:'#3a6a3a',8:'#4a8a2a',16:'#6aaa2a',32:'#8acc00',64:'#aaff00',128:'#00ff41',256:'#00ccff',512:'#ff6600',1024:'#ff0040',2048:'#ffcc00'};
@@ -33,6 +39,8 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowUp'){e.preventDefault();move('up')}
   if(e.key==='ArrowDown'){e.preventDefault();move('down')}
 });
+document.querySelectorAll('[data-dir]').forEach(button=>button.addEventListener('click',()=>move(button.dataset.dir)));
+document.getElementById('restart').addEventListener('click',init);
 let tx,ty;
 document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY});
 document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy)){move(dx>0?'right':'left')}else{move(dy>0?'down':'up')}});
