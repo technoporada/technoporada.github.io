@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pong // AI kontra AI</title>
+<style>
+:root{--navy:#10253f;--blue:#398bd1;--gold:#e5b93f;--paper:#fff8df;--muted:#536b83}
+*{box-sizing:border-box}body{margin:0;color:var(--navy);font-family:system-ui,sans-serif;background:linear-gradient(135deg,#e9f6ff,#c9e5f7 48%,#fff0bd)}
+main{max-width:900px;margin:auto;padding:24px 18px 50px}a{color:var(--blue);font-weight:700;text-decoration:none}header{text-align:center;padding:20px 0}h1{font-size:clamp(2rem,6vw,4rem);margin:12px 0}.lead,.hint{color:var(--muted)}
+.toolbar,.status,.commentary{background:var(--paper);border:1px solid #e5b93f88;border-radius:14px;padding:13px;margin:12px 0}
+button,select{border:1px solid var(--blue);background:#fafdff;color:var(--navy);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer;margin:3px}button:hover{background:var(--blue);color:#fff}
+canvas{display:block;width:100%;max-width:820px;height:auto;background:#10253f;border:6px solid #17466b;border-radius:12px;margin:16px auto}
+.score{text-align:center;font-size:1.2rem;font-weight:800}.score span{color:var(--blue)}.commentary{min-height:55px;line-height:1.5}.voice{color:var(--navy)}footer{text-align:center;color:var(--muted);margin-top:25px}
+</style>
+</head>
+<body><main>
+<a href="arena.html">← wróć do AI Game Arena</a>
+<header><div>🏓🤖⚔️🤖🏓</div><h1>PONG: AI KONTRA AI</h1><p class="lead">Refleks kontra spokój. Piłka nie zna litości.</p></header>
+<div class="toolbar"><button id="start">▶ Start</button><button id="pause">⏸ Pauza</button><button id="reset">↻ Nowy mecz</button><label> Prędkość <select id="speed"><option value="40">spokojnie</option><option value="22" selected>normalnie</option><option value="10">chaotycznie</option></select></label></div>
+<div class="score">🌪️ Panikarz <span id="left-score">0</span> : <span id="right-score">0</span> 🧘 Zen</div>
+<canvas id="pong" width="820" height="440" aria-label="Mecz Pong AI kontra AI"></canvas>
+<div class="status" id="status">Gotowi. Kliknij Start.</div><div class="commentary" id="commentary"><b>Komentator:</b> Piłka czeka na decyzję dwóch bardzo pewnych siebie algorytmów.</div>
+<footer><a href="arena.html">AI Game Arena</a> · <a href="index.html">Muzeum Areka</a></footer>
+</main>
+<script>
+const canvas=document.getElementById('pong'),ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,ph=88,pw=12;
+let game,timer=null,lastVoice='';const names=['Panikarz','Zen'];
+function reset(){stop();game={ball:{x:W/2,y:H/2,vx:5*(Math.random()<.5?-1:1),vy:3*(Math.random()<.5?-1:1)},left:H/2-ph/2,right:H/2-ph/2,score:[0,0],rally:0};draw();document.getElementById('status').textContent='Nowy mecz. Kliknij Start.';document.getElementById('commentary').innerHTML='<b>Komentator:</b> Piłka czeka na decyzję dwóch bardzo pewnych siebie algorytmów.'}
+function chooseY(side){const target=game.ball.y-ph/2;if(side===0)return game.left+(target-game.left)*.42+(Math.random()-.5)*13;return game.right+(target-game.right)*.18}
+function voice(){const text=game.rally>8?'Piłka lata, a pewność siebie rośnie.':'Panikarz rusza pierwszy, Zen udaje, że to było zaplanowane.';if(text!==lastVoice){lastVoice=text;document.getElementById('commentary').innerHTML='<b>Komentator:</b> <span class="voice">'+text+'</span>'}}
+function step(){game.left=Math.max(0,Math.min(H-ph,chooseY(0)));game.right=Math.max(0,Math.min(H-ph,chooseY(1)));const b=game.ball;b.x+=b.vx;b.y+=b.vy;if(b.y<8||b.y>H-8)b.vy*=-1;if(b.x<34&&b.x>20&&b.y>game.left-5&&b.y<game.left+ph+5){b.vx=Math.abs(b.vx)*1.03;b.vy+=(b.y-(game.left+ph/2))*.04;game.rally++}if(b.x>W-34&&b.x<W-20&&b.y>game.right-5&&b.y<game.right+ph+5){b.vx=-Math.abs(b.vx)*1.03;b.vy+=(b.y-(game.right+ph/2))*.04;game.rally++}if(b.x<0){game.score[1]++;point(1)}if(b.x>W){game.score[0]++;point(0)}voice();draw()}
+function point(winner){game.ball={x:W/2,y:H/2,vx:5*(winner? -1:1),vy:3*(Math.random()<.5?-1:1)};game.rally=0;document.getElementById('status').textContent=names[winner]+' zdobywa punkt.';if(game.score[winner]>=7){stop();document.getElementById('status').textContent='Koniec meczu — '+names[winner]+' wygrywa '+game.score[winner]+':'+game.score[1-winner]+'!'}}
+function draw(){ctx.fillStyle='#10253f';ctx.fillRect(0,0,W,H);ctx.setLineDash([8,12]);ctx.strokeStyle='#398bd155';ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#e5b93f';ctx.fillRect(18,game.left,pw,ph);ctx.fillStyle='#398bd1';ctx.fillRect(W-30,game.right,pw,ph);ctx.beginPath();ctx.arc(game.ball.x,game.ball.y,9,0,Math.PI*2);ctx.fillStyle='#fff8df';ctx.fill();document.getElementById('left-score').textContent=game.score[0];document.getElementById('right-score').textContent=game.score[1]}
+function start(){stop();timer=setInterval(step,Number(document.getElementById('speed').value));document.getElementById('status').textContent='Mecz trwa...'}function stop(){if(timer){clearInterval(timer);timer=null}}
+document.getElementById('start').onclick=start;document.getElementById('pause').onclick=()=>{stop();document.getElementById('status').textContent='Pauza.'};document.getElementById('reset').onclick=reset;reset();
+</script></body></html>
