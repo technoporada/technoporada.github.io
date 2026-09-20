@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>2048</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:'Courier New',monospace;color:#00ff41}h2{margin-bottom:10px}.grid{display:grid;grid-template-columns:repeat(4,80px);gap:6px}.cell{width:80px;height:80px;background:#1a2a1a;border:1px solid #2a4a2a;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:bold;border-radius:6px}</style>
+</head>
+<body>
+<h2>SCORE: <span id="s">0</span></h2>
+<div class="grid" id="g"></div>
+<script>
+let grid,score;
+const C={0:'#1a2a1a',2:'#2a4a2a',4:'#3a6a3a',8:'#4a8a2a',16:'#6aaa2a',32:'#8acc00',64:'#aaff00',128:'#00ff41',256:'#00ccff',512:'#ff6600',1024:'#ff0040',2048:'#ffcc00'};
+function init(){grid=Array(4).fill(null).map(()=>Array(4).fill(0));score=0;add();add();document.getElementById('s').textContent=0;render()}
+function add(){const empty=[];for(let r=0;r<4;r++)for(let c=0;c<4;c++)if(!grid[r][c])empty.push([r,c]);if(!empty.length)return;const[r,c]=empty[Math.floor(Math.random()*empty.length)];grid[r][c]=Math.random()<.9?2:4}
+function render(){const g=document.getElementById('g');g.innerHTML='';for(let r=0;r<4;r++)for(let c=0;c<4;c++){const d=document.createElement('div');d.className='cell';d.textContent=grid[r][c]||'';d.style.background=C[grid[r][c]]||'#ffcc00';d.style.color=grid[r][c]>4?'#0a0a0a':'#e0e0e0';g.appendChild(d)}}
+function slide(row){let a=row.filter(v=>v),merged=false;for(let i=0;i<a.length-1;i++){if(a[i]===a[i+1]){a[i]*=2;score+=a[i];a.splice(i+1,1);merged=true}}while(a.length<4)a.push(0);return a}
+function move(dir){
+  let moved=false;const prev=JSON.stringify(grid);
+  if(dir==='left')for(let r=0;r<4;r++){grid[r]=slide(grid[r]);grid[r]=slide(grid[r])}
+  if(dir==='right')for(let r=0;r<4;r++){grid[r]=slide([...grid[r]].reverse()).reverse();grid[r]=slide(grid[r])}
+  if(dir==='up'){for(let c=0;c<4;c++){let col=[grid[0][c],grid[1][c],grid[2][c],grid[3][c]];col=slide(col);col=slide(col);for(let r=0;r<4;r++)grid[r][c]=col[r]}}
+  if(dir==='down'){for(let c=0;c<4;c++){let col=[grid[3][c],grid[2][c],grid[1][c],grid[0][c]];col=slide(col);col=slide(col);for(let r=0;r<4;r++)grid[r][c]=col[3-r]}}
+  if(JSON.stringify(grid)!==prev){add();moved=true}
+  document.getElementById('s').textContent=score;render();
+  if(!canMove())alert('GAME OVER! Score: '+score);
+}
+function canMove(){for(let r=0;r<4;r++)for(let c=0;c<4;c++){if(!grid[r][c])return true;if(c<3&&grid[r][c]===grid[r][c+1])return true;if(r<3&&grid[r][c]===grid[r+1][c])return true}return false}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'){e.preventDefault();move('left')}
+  if(e.key==='ArrowRight'){e.preventDefault();move('right')}
+  if(e.key==='ArrowUp'){e.preventDefault();move('up')}
+  if(e.key==='ArrowDown'){e.preventDefault();move('down')}
+});
+let tx,ty;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>Math.abs(dy)){move(dx>0?'right':'left')}else{move(dy>0?'down':'up')}});
+init();
+</script>
+<script>
+window.TOUCH_CONFIG={keys:['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'],touchMove:false};
+</script>
+<script src="touch-controls.js"></script>
+</body>
+</html>

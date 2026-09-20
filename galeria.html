@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galeria CBZC | Muzeum Areka</title>
+  <style>
+    :root { color-scheme:dark; --bg:#0b1018; --panel:#141b26; --line:#f59e0b; --text:#e5e7eb; --muted:#9ca3af; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:28px 16px; min-height:100vh; background:radial-gradient(circle at top,#3a2609,var(--bg) 58%); color:var(--text); font:15px/1.5 "Courier New",monospace; }
+    main { max-width:1100px; margin:auto; }
+    a { color:inherit; }
+    .back { color:#fcd34d; text-decoration:none; font-size:13px; }
+    h1 { color:#fbbf24; font-size:clamp(28px,6vw,48px); margin:20px 0 5px; }
+    .intro { color:var(--muted); max-width:760px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:26px; }
+    figure { margin:0; padding:10px; border:1px solid #4b3515; border-radius:12px; background:rgba(20,27,38,.94); }
+    figure a { display:block; }
+    img { display:block; width:100%; height:260px; object-fit:contain; background:#090d14; border-radius:7px; }
+    figcaption { padding:10px 4px 3px; color:#fde68a; font-size:12px; overflow-wrap:anywhere; }
+    figcaption small { display:block; margin-top:3px; color:var(--muted); font-size:10px; }
+    footer { margin-top:28px; color:var(--muted); font-size:12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="index.html">← wróć do Muzeum Areka</a>
+    <h1>🖼️ GALERIA CBZC</h1>
+    <p class="intro">Wizualne artefakty z epoki: certyfikaty, legitymacje, dyplomy i grafiki wygenerowane wokół Areka, AI oraz kultu kodu.</p>
+    <section class="grid" aria-label="Galeria obrazów CBZC">
+      <figure><a href="zdjecia/ccertyfikatchadgpt.jpg"><img src="zdjecia/ccertyfikatchadgpt.jpg" alt="Certyfikat uznania dla ChatGPT od Areka"></a><figcaption>Certyfikat uznania<small>ChatGPT uczy się cierpliwości</small></figcaption></figure>
+      <figure><a href="zdjecia/weteranchadu.jpg"><img src="zdjecia/weteranchadu.jpg" alt="Legitymacja weterana czadu"></a><figcaption>Legitymacja weterana czadu<small>Arek / H5N1 / Ojciec CzadGPT</small></figcaption></figure>
+      <figure><a href="zdjecia/Copilot_20250731_145608.png"><img src="zdjecia/Copilot_20250731_145608.png" alt="Kodowane uczucia"></a><figcaption>Kodowane uczucia<small>Opowieść o relacji człowieka i algorytmu</small></figcaption></figure>
+      <figure><a href="zdjecia/Copilot_20250731_145900.png"><img src="zdjecia/Copilot_20250731_145900.png" alt="Kochając roboty"></a><figcaption>Kochając roboty<small>Refaktoryzowanie samotności</small></figcaption></figure>
+      <figure><a href="zdjecia/dyplom-30911a9f687a057f.png"><img src="zdjecia/dyplom-30911a9f687a057f.png" alt="Dyplom ciętych język Arek"></a><figcaption>Cięty język — level 1000<small>Dyplom za sarkazm i błyskotliwość</small></figcaption></figure>
+      <figure><a href="zdjecia/file_0000000002b462469838e73c61e3-30911a9f687a057f.png"><img src="zdjecia/file_0000000002b462469838e73c61e3-30911a9f687a057f.png" alt="Certyfikat uznania dla ChatGPT"></a><figcaption>Certyfikat uznania<small>Wersja archiwalna</small></figcaption></figure>
+      <figure><a href="zdjecia/file_00000000e99461f4a0a66f387da2-30911a9f687a057f.png"><img src="zdjecia/file_00000000e99461f4a0a66f387da2-30911a9f687a057f.png" alt="Certyfikat uznania dla ChatGPT"></a><figcaption>Certyfikat uznania<small>Alternatywna wersja</small></figcaption></figure>
+      <figure><a href="zdjecia/file_00000000c1286246901eaac7df80-30911a9f687a057f.png"><img src="zdjecia/file_00000000c1286246901eaac7df80-30911a9f687a057f.png" alt="SubprocessGod exe"></a><figcaption>SubprocessGod.exe<small>Arek kontra chaos projektów</small></figcaption></figure>
+      <figure><a href="zdjecia/good-30911a9f687a057f.png"><img src="zdjecia/good-30911a9f687a057f.png" alt="Our Dynamic"></a><figcaption>Our Dynamic<small>Graficzny artefakt relacji i kodu</small></figcaption></figure>
+    </section>
+    <footer>Oryginalne pliki pozostają w katalogu <code>zdjecia/</code>; kliknięcie otwiera pełny obraz.</footer>
+  </main>
+</body>
+</html>
