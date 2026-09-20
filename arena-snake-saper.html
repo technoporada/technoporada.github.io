@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snake × Saper // AI kontra AI</title>
+<style>
+:root{--navy:#10253f;--blue:#398bd1;--gold:#e5b93f;--paper:#fff8df;--muted:#536b83}
+*{box-sizing:border-box}body{margin:0;color:var(--navy);font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#e9f6ff,#c9e5f7 48%,#fff0bd)}
+main{max-width:1080px;margin:auto;padding:24px 18px 55px}a{color:var(--blue);font-weight:700;text-decoration:none}
+header{text-align:center;padding:20px 0 14px}h1{font-size:clamp(1.9rem,6vw,4rem);margin:10px 0}.lead,.hint{color:var(--muted)}
+.toolbar,.status,.commentary{background:var(--paper);border:1px solid #e5b93f88;border-radius:14px;padding:13px;margin:12px 0}
+button,select{border:1px solid var(--blue);background:#fafdff;color:var(--navy);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer;margin:3px}button:hover{background:var(--blue);color:#fff}
+.boards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.board-card{background:#fafdff;border:1px solid #398bd155;border-radius:18px;padding:14px;box-shadow:0 8px 22px #17466b22}.board-card h2{margin:0 0 5px}.score{color:var(--blue);font-weight:800}
+canvas{display:block;width:100%;height:auto;background:#173b59;border:5px solid #17466b;border-radius:10px;margin-top:12px}.legend{font-size:.83rem;color:var(--muted);line-height:1.45}
+.commentary{min-height:62px;line-height:1.5}.voice{color:var(--navy)}footer{text-align:center;color:var(--muted);margin-top:28px}@media(max-width:720px){.boards{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<a href="arena.html">← wróć do AI Game Arena</a>
+<header><div>🐍🤖💣⚔️🤖🐍</div><h1>SNAKE × SAPER</h1><p class="lead">Ryzykant kontra Ostrożniak — jedzenie jest nagrodą, mina jest argumentem.</p></header>
+<div class="toolbar"><button id="start">▶ Start</button><button id="pause">⏸ Pauza</button><button id="step">⏭ Jeden ruch</button><button id="reset">↻ Nowy mecz</button><label> Prędkość <select id="speed"><option value="650">spokojnie</option><option value="300" selected>normalnie</option><option value="90">chaotycznie</option></select></label></div>
+<div class="status" id="status">Gotowi. Kliknij Start albo Jeden ruch.</div>
+<section class="boards">
+<article class="board-card"><h2>🔥 AI Ryzykant <span class="score" id="score-risk">0 pkt</span></h2><p class="legend">Idzie po jedzenie, nawet jeśli liczby obok wyglądają jak zły omen.</p><canvas id="board-risk" width="540" height="420" aria-label="Plansza AI Ryzykant"></canvas></article>
+<article class="board-card"><h2>🛡️ AI Ostrożniak <span class="score" id="score-safe">0 pkt</span></h2><p class="legend">Liczy sąsiadujące miny i wybiera przeżycie, chyba że jedzenie jest naprawdę blisko.</p><canvas id="board-safe" width="540" height="420" aria-label="Plansza AI Ostrożniak"></canvas></article>
+</section>
+<div class="commentary" id="commentary"><b>Komentator:</b> Na planszy są miny. Boty jeszcze o tym nie wiedzą.</div>
+<p class="hint">Zasady miksu: snake musi unikać ścian, własnego ogona i min. Liczby pokazują, ile min dotyka pola, ale bot widzi tylko bezpośrednie sąsiedztwo.</p>
+<footer><a href="arena.html">AI Game Arena</a> · <a href="index.html">Muzeum Areka</a></footer>
+</main>
+<script>
+const COLS=18,ROWS=14,MINES=30,dirs=[{x:0,y:-1,n:'GÓRA'},{x:1,y:0,n:'PRAWO'},{x:0,y:1,n:'DÓŁ'},{x:-1,y:0,n:'LEWO'}];
+let timer=null,round=0,world,games;
+const names={risk:'AI Ryzykant',safe:'AI Ostrożniak'};
+function key(x,y){return x+','+y}function inside(x,y){return x>=0&&x<COLS&&y>=0&&y<ROWS}
+function neighbors(x,y){return dirs.map(d=>({x:x+d.x,y:y+d.y})).filter(p=>inside(p.x,p.y))}
+function makeWorld(){const mines=new Set();while(mines.size<MINES){const p=key(Math.floor(Math.random()*COLS),Math.floor(Math.random()*ROWS));if(!mines.has(p)&&p!=='4,7'&&p!=='13,7')mines.add(p)}const clues={};for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)clues[key(x,y)]=neighbors(x,y).filter(p=>mines.has(key(p.x,p.y))).length;return{mines,clues,food:{x:9,y:7}}}
+function makeGame(side){const start=side==='risk'?{x:4,y:7}:{x:13,y:7};return{body:[start],dir:side==='risk'?1:3,score:0,over:false,reason:'',side,known:new Set(),food:world.food}}
+function reset(){stop();round=0;world=makeWorld();games={risk:makeGame('risk'),safe:makeGame('safe')};drawAll();setStatus('Nowy mecz. Kliknij Start albo Jeden ruch.');say('Na planszy są miny. Boty jeszcze o tym nie wiedzą.')}
+function distance(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)}
+function legalMoves(g){return dirs.map((d,i)=>({d,i,x:g.body[0].x+d.x,y:g.body[0].y+d.y})).filter(p=>inside(p.x,p.y)&&!g.body.some((b,j)=>j>0&&b.x===p.x&&b.y===p.y))}
+function scoreMove(g,m){const p={x:m.x,y:m.y},mine=world.mines.has(key(p.x,p.y)),occupied=g.body.some(b=>b.x===p.x&&b.y===p.y),near=world.clues[key(p.x,p.y)],free=neighbors(p.x,p.y).filter(n=>!g.body.some(b=>b.x===n.x&&b.y===n.y)&&!world.mines.has(key(n.x,n.y))).length;let score=free*7-distance(p,g.food)*1.6;if(mine)score+=g.side==='risk'?-95:-420;if(occupied)score-=1000;if(near)score-=g.side==='risk'?near*4:near*35;if(p.x===g.food.x&&p.y===g.food.y)score+=g.side==='risk'?300:220;return score}
+function choose(g){const legal=legalMoves(g);if(!legal.length)return null;let best=legal[0],value=-Infinity;for(const move of legal){let v=scoreMove(g,move);if(g.side==='risk')v+=Math.random()*110;else v+=Math.random()*12;if(v>value){value=v;best=move}}return best}
+function stepGame(g){if(g.over)return false;const move=choose(g);if(!move){g.over=true;g.reason='został bez ruchu';return false}const p={x:move.x,y:move.y};g.dir=move.i;g.known.add(key(p.x,p.y));if(world.mines.has(key(p.x,p.y))){g.body.unshift(p);g.over=true;g.reason='wjechał na minę 💣';return false}g.body.unshift(p);if(p.x===g.food.x&&p.y===g.food.y){g.score+=10;placeFood(g)}else g.body.pop();return true}
+function placeFood(){let free=[];for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(!world.mines.has(key(x,y))&&!games.risk.body.some(b=>b.x===x&&b.y===y)&&!games.safe.body.some(b=>b.x===x&&b.y===y))free.push({x,y});if(free.length)world.food=free[Math.floor(Math.random()*free.length)];games.risk.food=world.food;games.safe.food=world.food}
+function draw(id,g){const canvas=document.getElementById('board-'+id),ctx=canvas.getContext('2d'),cw=canvas.width/COLS,ch=canvas.height/ROWS;ctx.fillStyle='#173b59';ctx.fillRect(0,0,canvas.width,canvas.height);for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const k=key(x,y),isKnown=g.known.has(k),clue=world.clues[k];ctx.fillStyle=(x+y)%2?'#24536e':'#1f4862';ctx.fillRect(x*cw,y*ch,cw-1,ch-1);if(isKnown&&clue){ctx.fillStyle=clue>2?'#f07d59':'#e5b93f';ctx.font='bold '+Math.floor(ch*.52)+'px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(clue,x*cw+cw/2,y*ch+ch/2)}}ctx.fillStyle='#e5b93f';ctx.beginPath();ctx.arc((world.food.x+.5)*cw,(world.food.y+.5)*ch,Math.min(cw,ch)*.28,0,Math.PI*2);ctx.fill();g.body.forEach((p,i)=>{ctx.fillStyle=i===0?(id==='risk'?'#ff7043':'#8ee3a8'):'#398bd1';ctx.fillRect(p.x*cw+2,p.y*ch+2,cw-4,ch-4)});if(g.over){ctx.fillStyle='#10253fcc';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff8df';ctx.font='bold 22px system-ui';ctx.textAlign='center';ctx.fillText(g.reason,canvas.width/2,canvas.height/2)}document.getElementById('score-'+id).textContent=g.score+' pkt'}
+function drawAll(){draw('risk',games.risk);draw('safe',games.safe)}
+function say(text){document.getElementById('commentary').innerHTML='<b>Komentator:</b> <span class="voice">'+text+'</span>'}
+function setStatus(text){document.getElementById('status').textContent=text}
+function step(){let alive=[];for(const id of Object.keys(games))if(stepGame(games[id]))alive.push(id);round++;drawAll();const lines=Object.keys(games).map(id=>games[id].over?names[id]+' '+games[id].reason:names[id]+' jeszcze żyje.');say(lines.join(' · '));if(!alive.length){stop();const winner=games.risk.score===games.safe.score?'Remis — miny wygrały.':games.risk.score>games.safe.score?'Ryzykant wygrywa punktami!':'Ostrożniak wygrywa punktami!';setStatus('Koniec po '+round+' rundach. '+winner)}else setStatus('Runda '+round+' · '+alive.map(id=>names[id]).join(' i ')+' jadą dalej.')}
+function start(){stop();timer=setInterval(step,Number(document.getElementById('speed').value));setStatus('Mecz trwa...')}function stop(){if(timer){clearInterval(timer);timer=null}}
+document.getElementById('start').onclick=start;document.getElementById('pause').onclick=()=>{stop();setStatus('Pauza.')};document.getElementById('step').onclick=step;document.getElementById('reset').onclick=reset;reset();
+</script>
+</body></html>
