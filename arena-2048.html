@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arena 2048 // AI kontra AI</title>
+<style>
+:root{--navy:#10253f;--blue:#398bd1;--gold:#e5b93f;--paper:#fff8df;--muted:#536b83}
+*{box-sizing:border-box}body{margin:0;color:var(--navy);font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#e9f6ff,#c9e5f7 48%,#fff0bd)}
+main{max-width:1050px;margin:auto;padding:24px 18px 55px}a{color:var(--blue);font-weight:700;text-decoration:none}
+header{text-align:center;padding:25px 0 20px}h1{font-size:clamp(2rem,6vw,4rem);margin:10px 0}.lead{color:var(--muted)}
+.toolbar,.status,.commentary{background:var(--paper);border:1px solid #e5b93f88;border-radius:14px;padding:14px;margin:14px 0}
+button,select{border:1px solid var(--blue);background:#fafdff;color:var(--navy);border-radius:8px;padding:9px 13px;font:inherit;cursor:pointer;margin:3px}
+button:hover{background:var(--blue);color:white}.boards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.board-card{background:#fafdff;border:1px solid #398bd155;border-radius:18px;padding:16px;box-shadow:0 8px 22px #17466b22}
+.board-card h2{margin:0 0 5px}.score{color:var(--blue);font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:#173b59;padding:6px;border-radius:8px;margin-top:12px}
+.cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:5px;background:#d9e8f1;font-size:clamp(1rem,3vw,1.55rem);font-weight:800;color:var(--navy)}
+.cell.v2{background:#e5f1f8}.cell.v4{background:#c4e1f0}.cell.v8{background:#8bc7e8}.cell.v16{background:#61acd4}.cell.v32{background:#398bd1;color:white}.cell.v64{background:#286ca7;color:white}.cell.v128,.cell.v256,.cell.v512,.cell.v1024,.cell.v2048{background:var(--gold)}
+.commentary{min-height:48px;color:var(--muted)}.commentary strong{color:var(--navy)}
+.rules{font-size:.9rem;color:var(--muted);line-height:1.5}footer{text-align:center;color:var(--muted);margin-top:28px}
+@media(max-width:700px){.boards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<a href="index.html">← wróć do Muzeum Areka</a>
+<header><div>🤖⚔️🤖</div><h1>ARENA 2048</h1><p class="lead">AI Chaos kontra AI Strateg — dwa algorytmy, jedna planszowa wojna.</p></header>
+<div class="toolbar">
+  <button id="start">▶ Start</button><button id="pause">⏸ Pauza</button><button id="step">⏭ Jeden ruch</button><button id="reset">↻ Nowy mecz</button>
+  <label> Prędkość <select id="speed"><option value="700">spokojnie</option><option value="300" selected>normalnie</option><option value="80">chaotycznie</option></select></label>
+</div>
+<div class="status" id="status">Gotowi. Kliknij Start albo Jeden ruch.</div>
+<section class="boards">
+  <article class="board-card"><h2>🌪️ AI Chaos</h2><p>Ryzyko, losowe decyzje i szybkie ruchy. <span class="score" id="score-chaos">0 pkt</span></p><div class="grid" id="grid-chaos"></div></article>
+  <article class="board-card"><h2>🧠 AI Strateg</h2><p>Preferuje narożnik i spokojne układanie planszy. <span class="score" id="score-strateg">0 pkt</span></p><div class="grid" id="grid-strateg"></div></article>
+</section>
+<div class="commentary" id="commentary"><strong>Komentator:</strong> Modele patrzą na plansze i udają, że mają plan.</div>
+<p class="rules">To lokalna symulacja dwóch strategii — bez połączenia z API AI. Wyniki są zabawą, nie dowodem wyższości żadnego modelu.</p>
+<footer><a href="index.html">Muzeum Areka</a> · <a href="gra-2048.html">zagraj sam</a></footer>
+</main>
+<script>
+const dirs=['up','right','down','left'];let timer=null,round=0;
+const names={chaos:'AI Chaos',strateg:'AI Strateg'};
+function fresh(){const a=Array(16).fill(0);add(a);add(a);return{a,score:0,over:false}}
+let games={chaos:fresh(),strateg:fresh()};
+function add(g){const e=g.map((v,i)=>v?null:i).filter(v=>v!==null);if(e.length)g[e[Math.floor(Math.random()*e.length)]]=Math.random()<.9?2:4}
+function move(g,d){const before=g.a.join(),old=g.a.slice(),lines=[];for(let i=0;i<4;i++){let line=d==='left'||d==='right'?[0,1,2,3].map(c=>g.a[i*4+c]):[0,1,2,3].map(r=>g.a[r*4+i]);if(d==='right'||d==='down')line.reverse();line=line.filter(Boolean);for(let j=0;j<line.length-1;j++)if(line[j]===line[j+1]){line[j]*=2;g.score+=line[j];line.splice(j+1,1)}while(line.length<4)line.push(0);if(d==='right'||d==='down')line.reverse();for(let j=0;j<4;j++)d==='left'||d==='right'?g.a[i*4+j]=line[j]:g.a[j*4+i]=line[j]}if(g.a.join()!==before){add(g.a);return true}g.a=old;return false}
+function possible(g){return dirs.some(d=>{const h={a:g.a.slice(),score:g.score};return move(h,d)})}
+function choose(g,type){const valid=dirs.filter(d=>{const h={a:g.a.slice(),score:g.score};return move(h,d)});if(!valid.length)return null;if(type==='chaos')return valid[Math.floor(Math.random()*valid.length)];let best=valid[0],value=-Infinity;for(const d of valid){const h={a:g.a.slice(),score:g.score};move(h,d);const empt=h.a.filter(v=>!v).length,max=Math.max(...h.a),corner=h.a[15]===max?120:0;const v=empt*8+corner+max/20;if(v>value){value=v;best=d}}return best}
+function draw(id,g){const el=document.getElementById('grid-'+id);el.innerHTML='';g.a.forEach(v=>{const c=document.createElement('div');c.className='cell '+(v?'v'+Math.min(v,2048):'');c.textContent=v||'';el.appendChild(c)});document.getElementById('score-'+id).textContent=g.score+' pkt'}
+function drawAll(){draw('chaos',games.chaos);draw('strateg',games.strateg)}
+function step(){let alive=[];for(const id of Object.keys(games)){const g=games[id];if(!g.over){const d=choose(g,id);if(d){move(g,d);alive.push(id);document.getElementById('commentary').innerHTML='<strong>Komentator:</strong> '+names[id]+' wybiera ruch <b>'+d.toUpperCase()+'</b>.'}else g.over=true}}round++;drawAll();if(!alive.length){stop();document.getElementById('status').textContent='Koniec meczu po '+round+' rundach. Wyższy wynik wygrywa!';}else document.getElementById('status').textContent='Runda '+round+' · '+alive.map(id=>names[id]).join(' i ')+' grają.'}
+function stop(){if(timer){clearInterval(timer);timer=null}}function start(){stop();timer=setInterval(step,Number(document.getElementById('speed').value));document.getElementById('status').textContent='Mecz trwa...'}function reset(){stop();games={chaos:fresh(),strateg:fresh()};round=0;drawAll();document.getElementById('status').textContent='Nowy mecz. Kliknij Start albo Jeden ruch.'}
+document.getElementById('start').onclick=start;document.getElementById('pause').onclick=()=>{stop();document.getElementById('status').textContent='Pauza.'};document.getElementById('step').onclick=step;document.getElementById('reset').onclick=reset;reset();
+</script>
+</body>
+</html>
