@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kółko-krzyżyk // AI kontra AI</title>
+<style>
+:root{--navy:#10253f;--blue:#398bd1;--gold:#e5b93f;--paper:#fff8df;--muted:#536b83}
+*{box-sizing:border-box}body{margin:0;color:var(--navy);font-family:system-ui,sans-serif;background:linear-gradient(135deg,#e9f6ff,#c9e5f7 48%,#fff0bd)}
+main{max-width:720px;margin:auto;padding:24px 18px 55px}a{color:var(--blue);font-weight:700;text-decoration:none}
+header{text-align:center;padding:20px 0 14px}h1{font-size:clamp(2rem,7vw,4rem);margin:10px 0}.lead,.hint{color:var(--muted)}
+.toolbar,.status,.commentary{background:var(--paper);border:1px solid #e5b93f88;border-radius:14px;padding:13px;margin:12px 0}
+button,select{border:1px solid var(--blue);background:#fafdff;color:var(--navy);border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer;margin:3px}button:hover{background:var(--blue);color:#fff}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:450px;margin:18px auto;background:#17466b;padding:8px;border-radius:14px}.cell{aspect-ratio:1;border:0;border-radius:8px;background:#fafdff;color:var(--navy);font-size:clamp(2.5rem,12vw,5rem);font-weight:800}.cell.x{color:var(--blue)}.cell.o{color:#d58f25}.cell.win{background:#e5b93f}.commentary{min-height:55px;line-height:1.5}.voice{color:var(--navy)}footer{text-align:center;color:var(--muted);margin-top:28px}
+</style>
+</head>
+<body><main>
+<a href="arena.html">← wróć do AI Game Arena</a>
+<header><div>🤖⭕⚔️❌🤖</div><h1>KÓŁKO-KRZYŻYK</h1><p class="lead">Minimax kontra Chaos — dziewięć pól, zero wymówek.</p></header>
+<div class="toolbar"><button id="start">▶ Start</button><button id="pause">⏸ Pauza</button><button id="step">⏭ Jeden ruch</button><button id="reset">↻ Nowy mecz</button><label> Prędkość <select id="speed"><option value="1100">spokojnie</option><option value="500" selected>normalnie</option><option value="150">chaotycznie</option></select></label></div>
+<div class="status" id="status">Gotowi. Kliknij Start albo Jeden ruch.</div>
+<div class="board" id="board" aria-label="Plansza kółko-krzyżyk"></div>
+<div class="commentary" id="commentary"><b>Komentator:</b> Minimax patrzy na planszę. Chaos patrzy gdzie indziej.</div>
+<p class="hint">🔵 Minimax gra X i próbuje nie przegrać. 🟠 Chaos gra O i czasem podejmuje decyzję, której nie da się obronić.</p>
+<footer><a href="arena.html">AI Game Arena</a> · <a href="index.html">Muzeum Areka</a></footer>
+</main>
+<script>
+let board,timer=null,turn='X',over=false,winning=[];
+const boardEl=document.getElementById('board'),statusEl=document.getElementById('status'),commentaryEl=document.getElementById('commentary');
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function reset(){stop();board=Array(9).fill('');turn='X';over=false;winning=[];draw();statusEl.textContent='Nowy mecz. Zaczyna Minimax.';say('Minimax patrzy na planszę. Chaos patrzy gdzie indziej.')}
+function winner(b){for(const line of wins)if(b[line[0]]&&b[line[0]]===b[line[1]]&&b[line[1]]===b[line[2]])return{mark:b[line[0]],line};return b.every(Boolean)?{mark:'draw',line:[]}:null}
+function draw(){boardEl.innerHTML='';board.forEach((v,i)=>{const c=document.createElement('button');c.className='cell '+(v?v.toLowerCase()+' ':'')+(winning.includes(i)?'win':'');c.textContent=v;c.disabled=true;boardEl.appendChild(c)})}
+function minimax(b,mark){const result=winner(b);if(result)return result.mark==='X'?10:result.mark==='O'?-10:0;const moves=[];for(let i=0;i<9;i++)if(!b[i]){b[i]=mark;const value=minimax(b,mark==='X'?'O':'X');b[i]='';moves.push({i,value})}if(mark==='X')return Math.max(...moves.map(m=>m.value));return Math.min(...moves.map(m=>m.value))}
+function chooseX(){let best=-Infinity,index=0;for(let i=0;i<9;i++)if(!board[i]){board[i]='X';const value=minimax(board,'O');board[i]='';if(value>best){best=value;index=i}}return index}
+function chooseO(){const free=board.map((v,i)=>v?null:i).filter(i=>i!==null);return free[Math.floor(Math.random()*free.length)]}
+function say(text){commentaryEl.innerHTML='<b>Komentator:</b> <span class="voice">'+text+'</span>'}
+function step(){if(over)return;const index=turn==='X'?chooseX():chooseO();if(index===undefined){finish();return}board[index]=turn;const actor=turn==='X'?'Minimax':'Chaos';const result=winner(board);draw();if(result){finish(result);return}say(turn==='X'?'Minimax: policzone. Teraz Chaos ma problem.':'Chaos: to nie był przypadek. To był... styl.');turn=turn==='X'?'O':'X';statusEl.textContent=actor+' wykonał ruch. Teraz gra '+(turn==='X'?'Minimax':'Chaos')+'.'}
+function finish(result=winner(board)){over=true;stop();if(result&&result.mark!=='draw'){winning=result.line;draw();statusEl.textContent=(result.mark==='X'?'Minimax':'Chaos')+' wygrywa!';say(result.mark==='X'?'Minimax: zgodnie z obliczeniami.':'Chaos: wygrałem i nie wiem jak.')}else{statusEl.textContent='Remis. Dziewięć pól i żadnej zgody.';say('Remis. Oba boty mogą teraz udawać, że tak miało być.')}}
+function start(){if(over)return;stop();timer=setInterval(step,Number(document.getElementById('speed').value));statusEl.textContent='Mecz trwa...'}function stop(){if(timer){clearInterval(timer);timer=null}}
+document.getElementById('start').onclick=start;document.getElementById('pause').onclick=()=>{stop();statusEl.textContent='Pauza.'};document.getElementById('step').onclick=step;document.getElementById('reset').onclick=reset;reset();
+</script>
+</body></html>
