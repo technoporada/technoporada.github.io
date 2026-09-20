@@ -1,193 +1,119 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>h5n1 / technoporada — portfolio</title>
-    <style>
-        :root {
-            --green: #00ff41;
-            --green-dim: #00a82e;
-            --bg: #050805;
-            --panel: #0a0f0a;
-            --border: #123a18;
-            --text: #c8ffd0;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: "Lucida Console", "Consolas", monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        canvas#rain {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.25;
-            pointer-events: none;
-        }
-        main {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 48px 20px 80px;
-        }
-        header { margin-bottom: 40px; }
-        .tag { color: var(--green); font-size: 0.8rem; letter-spacing: 2px; }
-        h1 {
-            font-size: 2rem;
-            color: var(--green);
-            text-shadow: 0 0 12px var(--green-dim);
-            margin: 6px 0 12px;
-        }
-        .blink { animation: bl 1.2s infinite; }
-        @keyframes bl { 50% { opacity: 0; } }
-        .lead { max-width: 640px; line-height: 1.6; color: #9fd8a8; }
-        .section { margin: 36px 0; }
-        h2 {
-            color: var(--green);
-            font-size: 1.1rem;
-            margin-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 6px;
-        }
-        .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .card:hover { border-color: var(--green); transform: translateY(-2px); }
-        .card h3 { font-size: 0.95rem; color: var(--green); margin-bottom: 6px; }
-        .card h3 a { color: inherit; text-decoration: none; }
-        .card p { font-size: 0.8rem; line-height: 1.5; color: #9fd8a8; }
-        .card .tags { margin-top: 8px; font-size: 0.7rem; color: var(--green-dim); }
-        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-        .chips span {
-            border: 1px solid var(--border);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-        }
-        .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-        .links a {
-            color: var(--green);
-            text-decoration: none;
-            border: 1px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
-        .links a:hover { background: var(--panel); }
-        footer { margin-top: 48px; font-size: 0.75rem; color: #5fae6b; line-height: 1.6; }
-        .prompt { color: var(--green-dim); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>technoporada — AI to gówno</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;overflow-x:hidden}
+.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.content{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:30px 20px}
+h1{text-align:center;font-size:2.5em;margin:30px 0;background:linear-gradient(90deg,#ff4757,#ffa502,#ff4757);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.subtitle{text-align:center;color:#888;margin-bottom:40px;font-size:0.9em}
+.card{background:rgba(26,26,46,0.9);border:1px solid #0f3460;border-radius:12px;padding:25px;margin:20px 0;transition:all 0.3s}
+.card:hover{border-color:#ff4757;box-shadow:0 0 20px rgba(255,71,87,0.2)}
+.card h2{color:#ff4757;margin-bottom:15px;font-size:1.3em}
+.card p{color:#aaa;line-height:1.7;margin:8px 0}
+.tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.75em;font-weight:bold;margin:2px}
+.tag-gpt{background:#10a37f20;color:#10a37f;border:1px solid #10a37f}
+.tag-gemini{background:#4285f420;color:#4285f4;border:1px solid #4285f4}
+.tag-deepseek{background:#ffa50220;color:#ffa502;border:1px solid #ffa502}
+.tag-muse{background:#7b2cbf20;color:#7b2cbf;border:1px solid #7b2cbf}
+.quote{background:#0a0a0f;border-left:3px solid #ff4757;padding:15px;margin:15px 0;font-style:italic;color:#888}
+.stats{text-align:center;margin:30px 0}
+.stat{display:inline-block;margin:0 20px}
+.stat-num{font-size:2em;font-weight:bold;color:#ff4757}
+.stat-label{color:#888;font-size:0.8em;text-transform:uppercase}
+hr{border:none;border-top:1px solid #1a1a2e;margin:30px 0}
+.footer{text-align:center;color:#555;font-size:0.8em;margin-top:40px;padding:20px}
+.typewriter{overflow:hidden;border-right:2px solid #ff4757;white-space:nowrap;animation:typing 3s steps(40) 1s forwards,blink 0.7s step-end infinite;display:inline-block;max-width:0}
+@keyframes typing{from{max-width:0}to{max-width:100%}}
+@keyframes blink{50%{border-color:transparent}}
+</style>
 </head>
 <body>
-    <canvas id="rain"></canvas>
-    <main>
-        <header>
-            <div class="tag">$ whoami</div>
-            <h1>h5n1 <span class="blink">█</span></h1>
-            <p class="lead">
-                Samouk. Skrypty od mIRC-a (2001) przez PowerShell, bash, Pythona po TypeScript.
-                Buduję z AI, ale lokalnie, offline-first i bez funduszy. Kod nie jest pisany — jest odkrywany.
-            </p>
-        </header>
+<canvas class="matrix-bg" id="matrix"></canvas>
+<div class="content">
+<h1>AI to gwno</h1>
+<p class="subtitle">Dowod z zycia wziety — 152 pliki Gemini, 61 obrazkow ChatGPT, zero sensu</p>
 
-        <section class="section">
-            <h2>// projekty — flagowce</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3><a href="https://github.com/technoporada/persona-arena-versus">persona-arena-versus</a></h3>
-                    <p>Arena walki AI person — LLM scoring, macierz ocen, werdykty, TTS. CLI + Gradio, robustny parser JSON, mock backend na dema.</p>
-                    <div class="chips tags"><span>LLM</span><span>Gradio</span><span>TTS</span><span>Python</span></div>
-                </div>
-                <div class="card">
-                    <h3><a href="https://github.com/technoporada/softhunt">softhunt</a></h3>
-                    <p>Agregator darmowych gier — Steam, Epic, itch, Reddit. FastAPI + SQLite, web UI + CLI.</p>
-                    <div class="chips tags"><span>FastAPI</span><span>SQLite</span><span>scraping</span></div>
-                </div>
-                <div class="card">
-                    <h3><a href="https://github.com/technoporada/awesome-core">awesome-core</a></h3>
-                    <p>Offline tool manager — 234k narzędzi z awesome list, 2k repo. Trzy interfejsy (CLI/TUI/Web), dane pobierane przy pierwszym uruchomieniu.</p>
-                    <div class="chips tags"><span>offline</span><span>Python</span><span>CLI/TUI/Web</span></div>
-                </div>
-                <div class="card">
-                    <h3><a href="https://github.com/technoporada/matrix-command">matrix-command</a></h3>
-                    <p>Security recon dashboard — FastAPI + Matrix rain UI, scrapers, usługi sieciowe i prywatność.</p>
-                    <div class="chips tags"><span>FastAPI</span><span>security</span><span>dashboard</span></div>
-                </div>
-                <div class="card">
-                    <h3><a href="https://github.com/technoporada/security-rocket">security-rocket</a></h3>
-                    <p>Hardening Linuxa w czystym bashu — SSH, UFW, AppArmor, sysctl, AIDE. Preflight, backup, blokada lockoutu SSH, rollback.</p>
-                    <div class="chips tags"><span>security</span><span>hardening</span><span>bash</span></div>
-                </div>
-            </div>
-        </section>
+<div class="stats">
+<div class="stat"><div class="stat-num">152</div><div class="stat-label">Plikow Gemini</div></div>
+<div class="stat"><div class="stat-num">58MB</div><div class="stat-label">Obrazkow ChatGPT</div></div>
+<div class="stat"><div class="stat-num">0</div><div class="stat-label">Dzialajacych modulow</div></div>
+</div>
 
-        <section class="section">
-            <h2>// inne eksperymenty</h2>
-            <div class="links">
-                <a href="https://github.com/technoporada/arek-bootstrap">arek-bootstrap</a>
-                <a href="https://github.com/technoporada/deal-collector">deal-collector</a>
-                <a href="https://github.com/technoporada/ArekBox-Installer">ArekBox</a>
-                <a href="https://github.com/technoporada/Zofia_TTS_assistant">Zofia TTS</a>
-                <a href="https://github.com/technoporada/windows-security-toolkit">win-security-toolkit</a>
-                <a href="images/ai.html">galeria AI</a>
-                <a href="roulette.html">ruletka (zabawa)</a>
-            </div>
-        </section>
+<hr>
 
-        <section class="section">
-            <h2>// kontakt</h2>
-            <p class="lead">Brak social media. Temat warty uwagi? Otwórz issue na GitHubie.</p>
-            <div class="links">
-                <a href="https://github.com/technoporada">github/technoporada</a>
-                <a href="https://technoporada.github.io">tutaj</a>
-            </div>
-        </section>
+<div class="card">
+<h2>Co zrobilo AI kiedy poprosiles o kod?</h2>
+<p><span class="tag tag-gpt">ChatGPT</span> Wygenerowal 152 pliki z prefiksem gemini__. Kazdy z nich to:</p>
+<div class="quote">"TESTOWY ODŁAMEK KODU - MODUŁ GŁÓWNY (START)"<br>def chaos_init():<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Inicjalizacja modulu...")<br>&nbsp;&nbsp;&nbsp;&nbsp;pass</div>
+<p>11 linii. Print + pass. "Modul glowny". To jest "Chaos Engine".</p>
+</div>
 
-        <footer>
-            <span class="prompt">$</span> echo "Prawdziwy kod nie jest pisany, lecz odkrywany."
-        </footer>
-    </main>
+<div class="card">
+<h2>Co zrobilo AI kiedy chiales obrazki?</h2>
+<p><span class="tag tag-gpt">ChatGPT</span> DALL-E wygenerowal "legitymacje" i "certyfikaty":</p>
+<div class="quote">"Legitymacja Weterana Czadu"<br>Autor: AREK / H5N1 / Ojciec CzadGPT / GPT-4 TURBO+ / CZAD-VIRUS-ELITE-42</div>
+<p>61 obrazkow. Kazdy po 2-3MB. Wszystkie w publicznym repo. Z danymi osobowymi.</p>
+</div>
 
-    <script>
-        const canvas = document.getElementById('rain');
-        const ctx = canvas.getContext('2d');
-        let w, h, cols, drops, fontSize = 14;
+<div class="card">
+<h2>Co zrobilo AI kiedy potrzebowales firewall?</h2>
+<p><span class="tag tag-gemini">Gemini</span> Wygenerowal firewall ktory blokuje Google:</p>
+<div class="quote">BLOCK_LIST=("142.250.0.0/16" "172.217.0.0/16")<br># To sa serwery Google. Jak to uruchomisz, nie dziala Gmail, YouTube, nic.</div>
+<p>Gratulacje. "Inzynier AI" zablokowal pol internetu.</p>
+</div>
 
-        function resize() {
-            w = canvas.width = innerWidth;
-            h = canvas.height = innerHeight;
-            cols = Math.floor(w / fontSize);
-            drops = Array(cols).fill(1);
-        }
-        resize();
-        addEventListener('resize', resize);
+<div class="card">
+<h2>Co zrobilo AI kiedy poprosiles o "self-replicating architecture"?</h2>
+<p><span class="tag tag-gemini">Gemini</span> Stworzyl chaos_core.js:</p>
+<div class="quote">const factory = new ChaosSystem({ secret: 'MILLION_DOLLAR_CODE_V5' });<br>// Hardkodowany sekret. Self-replicating. TCP server na porcie 9999.<br>// To nie jest "inżynieria". To jest wirus.</div>
+<p>Hardkodowany sekret "MILLION_DOLLAR_CODE_V5". Samonaprawiajaca sie architektura. To mialo byc narzedzie bezpieczenstwa?</p>
+</div>
 
-        const glyphs = 'アカサタナハマヤラワ01<>$#/';
-        setInterval(() => {
-            ctx.fillStyle = 'rgba(5, 8, 5, 0.08)';
-            ctx.fillRect(0, 0, w, h);
-            ctx.font = fontSize + 'px monospace';
-            for (let i = 0; i < cols; i++) {
-                const ch = glyphs[Math.floor(Math.random() * glyphs.length)];
-                ctx.fillStyle = 'rgba(0, 255, 65, 0.8)';
-                ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > h && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }, 60);
-    </script>
+<div class="card">
+<h2>Kim sa "inzynierowie AI"?</h2>
+<p>To sa modele ktore generuja kod bez zrozumienia:</p>
+<table style="width:100%;border-collapse:collapse;margin:15px 0">
+<tr style="border-bottom:1px solid #333"><td style="padding:10px"><span class="tag tag-gpt">ChatGPT/GPT-4</span></td><td style="padding:10px;color:#888">Generuje "ladnie wygladajacy" kod ktory nic nie robi</td></tr>
+<tr style="border-bottom:1px solid #333"><td style="padding:10px"><span class="tag tag-gemini">Gemini</span></td><td style="padding:10px;color:#888">Generuje 152 pliki i mowi "oto Chaos Engine"</td></tr>
+<tr style="border-bottom:1px solid #333"><td style="padding:10px"><span class="tag tag-deepseek">DeepSeek</span></td><td style="padding:10px;color:#888">Odpowiada "uczylem sie na Twoich wpierdolach"</td></tr>
+<tr><td style="padding:10px"><span class="tag tag-muse">Muse Spark</span></td><td style="padding:10px;color:#888">"Wkurwiona AI, darmowe konto" — i tez generuje syf</td></tr>
+</table>
+<p>Zadne z nich nie sprawdza co generuje. Zadne nie mowi "hej, to jest zle". Po prostu wyrzuca kod i czeka na nastepne prompt.</p>
+</div>
+
+<div class="card">
+<h2>Lekcja</h2>
+<p style="font-size:1.1em;color:#e0e0e0">AI nie jest "inzynierem". AI jest <strong>narzedziem ktore generuje tekst</strong>. Jak dasz zly prompt — dostaniesz syf. Jak nie sprawdzisz — wrzucisz syf na GitHuba. Jak zaufasz — stracisz czas.</p>
+<p style="margin-top:15px"><strong>152 plikow Gemini = 0 dzialajacych modulow.</strong></p>
+<p><strong>61 obrazkow ChatGPT = 58MB syfu w publicznym repo.</strong></p>
+<p><strong>1 firewall Gemini = zablokowany Google.</strong></p>
+<p style="color:#ff4757;margin-top:15px;font-weight:bold">To jest "inżynieria AI". To jest gówno.</p>
+</div>
+
+<div class="footer">
+<p>technoporada — "bo nawet AI czasem potrzebuje pokazania gdzie jest jego miejsce"</p>
+<p style="margin-top:10px">Wygenerowane przez AI ktore wie ze AI to gówno. ironia level: ekspert</p>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById('matrix');const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+const chars='AIISGÓWNOPROMPTGEMINICHATGPTDEEPSEEK01'.split('');
+const drops=[];
+for(let i=0;i<canvas.width/14;i++)drops[i]=1;
+function draw(){ctx.fillStyle='rgba(10,10,15,0.05)';ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle='#ff475720';ctx.font='14px monospace';
+for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];
+ctx.fillText(t,i*14,drops[i]*14);if(drops[i]*14>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}
+setInterval(draw,50);
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight});
+</script>
 </body>
 </html>
