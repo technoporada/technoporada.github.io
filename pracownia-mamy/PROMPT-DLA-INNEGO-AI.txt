@@ -1,0 +1,78 @@
+PROMPT DLA INNEGO AI — PRACOWNIA MAMY
+
+Pracuję nad aplikacją „Pracownia Mamy” dla mamy, cioć i znajomych.
+To mobilna aplikacja/PWA do katalogowania wzorów szydełkowych.
+
+Publiczny adres:
+https://technoporada.github.io/pracownia-mamy/
+
+Repozytorium:
+https://github.com/technoporada/technoporada.github.io
+
+Folder aplikacji:
+pracownia-mamy/
+
+Obecne pliki:
+- pracownia-mamy/index.html
+- pracownia-mamy/manifest.webmanifest
+- pracownia-mamy/sw.js
+
+Co już działa:
+- dodawanie wzoru;
+- nazwa, osoba dodająca, rodzaj, trudność i status;
+- zdjęcie wzoru;
+- notatki;
+- link do oryginalnego źródła;
+- wyszukiwanie;
+- filtrowanie po statusie;
+- ulubione;
+- liczniki wszystkich, gotowych i ulubionych;
+- usuwanie wpisów;
+- eksport i import kopii JSON;
+- zapis lokalny w localStorage;
+- podstawowe działanie offline jako PWA.
+
+WAŻNE ZASADY:
+1. Najpierw przeczytaj istniejący kod i nie przepisuj aplikacji od zera.
+2. Nie usuwaj istniejących funkcji.
+3. Nie dodawaj haseł, kluczy API ani sekretów do repozytorium.
+4. Nie publikuj zmian bez pokazania podsumowania.
+5. Nie kopiuj pełnych płatnych wzorów ani cudzych zdjęć bez zgody.
+6. Pełny wzór powinien pozostać na stronie autora; w katalogu zapisujemy metadane i link.
+7. Przy zewnętrznych stronach używaj tylko oficjalnego API, publicznego JSON/RSS albo legalnego importu przez URL.
+8. Nie obchodź zabezpieczeń, logowania, limitów ani regulaminów stron.
+9. Jeśli prawdziwe API wymaga backendu lub klucza, przygotuj najpierw wersję demonstracyjną na lokalnych danych.
+10. Zachowaj prosty interfejs dla osoby korzystającej głównie z telefonu.
+
+Plan dalszego rozwoju:
+
+ETAP 1 — bezpieczny prototyp:
+- dodaj moduł „Znajdź wzór online”;
+- użyj przykładowych danych albo ręcznego wklejenia URL-a;
+- pokaż tytuł, autora, opis, miniaturę tylko jeśli jest dozwolona oraz link do źródła;
+- dodaj przycisk „Dodaj do Pracowni”;
+- zapisuj informację, że wpis pochodzi z internetu.
+
+ETAP 2 — źródła:
+- sprawdź legalne oficjalne API, RSS lub publiczne JSON-y związane z szydełkowaniem;
+- zapisz dla każdego źródła: sposób dostępu, wymagany klucz, koszt, limity i zasady użycia;
+- nie buduj scrapera w ciemno.
+
+ETAP 3 — wspólny katalog:
+- zaproponuj darmowy backend, np. Supabase albo Firebase;
+- rozdziel konfigurację publiczną od sekretów;
+- umożliw wspólne wzory i zdjęcia dla rodziny;
+- dodaj prosty dostęp rodzinny, najlepiej zaproszenie lub kod;
+- zaproponuj reguły usuwania i edycji wpisów.
+
+Pracuj małymi krokami:
+1. audyt istniejącego kodu;
+2. krótka propozycja rozwiązania;
+3. mała implementacja;
+4. test lokalny;
+5. lista zmienionych plików;
+6. instrukcja testowania na telefonie;
+7. dopiero potem propozycja publikacji.
+
+Nie rób wielkiej przebudowy bez pytania. Najważniejsze są prostota,
+prywatność rodzinna, legalne źródła i zachowanie działającej aplikacji.
