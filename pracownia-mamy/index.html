@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#8b5e3c"><link rel="manifest" href="manifest.webmanifest">
+<title>Pracownia Mamy</title>
+<style>
+:root{--ink:#39281f;--brown:#8b5e3c;--cream:#fff8ed;--rose:#e9a7a7;--muted:#765f52}*{box-sizing:border-box}body{margin:0;color:var(--ink);font-family:system-ui,sans-serif;background:linear-gradient(145deg,#fff8ed,#f8e1d2);padding-bottom:35px}main{max-width:760px;margin:auto;padding:18px 15px}header{text-align:center;padding:18px 0}h1{font-size:clamp(2rem,10vw,4rem);margin:8px 0}.lead,.muted{color:var(--muted)}.card{background:#fffdf9;border:1px solid #8b5e3c33;border-radius:18px;padding:16px;margin:13px 0;box-shadow:0 5px 18px #6b40221c}label{display:block;font-weight:700;margin:10px 0 4px}input,select,textarea,button{width:100%;font:inherit;border:1px solid #8b5e3c66;border-radius:10px;padding:11px;background:#fff}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{background:var(--brown);color:#fff;font-weight:800;cursor:pointer;margin-top:10px}button.secondary{background:#fff;color:var(--brown)}.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pattern{display:grid;grid-template-columns:90px 1fr;gap:13px;align-items:start}.pattern img{width:90px;height:90px;object-fit:cover;border-radius:12px;background:#f5e5d9}.pattern h3{margin:0 0 5px}.badge{display:inline-block;background:#f7d5d0;border-radius:20px;padding:3px 8px;font-size:.78rem;margin:3px 2px 0 0}.empty{text-align:center;color:var(--muted);padding:20px}.hidden{display:none}footer{text-align:center;margin-top:25px;color:var(--muted);font-size:.9rem}@media(max-width:430px){.row,.toolbar{grid-template-columns:1fr}.pattern{grid-template-columns:70px 1fr}.pattern img{width:70px;height:70px}}
+</style>
+</head>
+<body><main>
+<a href="../index.html">← Muzeum Areka</a>
+<header><div>🧶🌷🧵</div><h1>Pracownia Mamy</h1><p class="lead">Wzory, pomysły i robótki mamy, cioć i znajomych.</p></header>
+<section class="card"><h2>Dodaj wzór</h2><form id="form"><label for="name">Nazwa wzoru</label><input id="name" required placeholder="np. Serwetka kwiatowa"><div class="row"><div><label for="owner">Kto dodał?</label><input id="owner" placeholder="Mama / Ciocia Ania"></div><div><label for="status">Status</label><select id="status"><option>Pomysł</option><option>W trakcie</option><option>Gotowe</option></select></div></div><div class="row"><div><label for="type">Rodzaj</label><input id="type" placeholder="serwetka, koc..."></div><div><label for="difficulty">Trudność</label><select id="difficulty"><option>łatwy</option><option>średni</option><option>trudny</option></select></div></div><label for="notes">Notatki i link do źródła</label><textarea id="notes" rows="3" placeholder="Włóczka, szydełko, poprawki, link z grupy..."></textarea><label for="photo">Zdjęcie</label><input id="photo" type="file" accept="image/*"><button>💾 Zapisz wzór</button></form></section>
+<section class="card"><div class="toolbar"><input id="search" placeholder="Szukaj wzoru..."><button class="secondary" id="install" hidden>📱 Zainstaluj aplikację</button><button class="secondary" id="export">⬇ Eksportuj kopię</button><label class="secondary" for="import">⬆ Importuj kopię</label><input id="import" type="file" accept=".json" class="hidden"></div></section>
+<section id="list"></section><footer>Działa lokalnie na telefonie. Wspólny katalog online podłączymy później.</footer>
+</main>
+<script>
+const key='pracowniaMamyPatterns';let items=JSON.parse(localStorage.getItem(key)||'[]'),photoData='',deferred;
+const $=id=>document.getElementById(id),form=$('form'),list=$('list');
+$('photo').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>photoData=r.result;r.readAsDataURL(f)};
+function save(){localStorage.setItem(key,JSON.stringify(items));render()}
+form.onsubmit=e=>{e.preventDefault();items.unshift({id:Date.now(),name:$('name').value,owner:$('owner').value||'Nie podano',status:$('status').value,type:$('type').value||'wzór',difficulty:$('difficulty').value,notes:$('notes').value,photo:photoData,date:new Date().toISOString()});save();form.reset();photoData='';alert('Wzór zapisany na tym telefonie.')}
+function render(){const q=$('search').value.toLowerCase();const shown=items.filter(x=>(x.name+' '+x.owner+' '+x.type+' '+x.notes).toLowerCase().includes(q));list.innerHTML=shown.length?shown.map(x=>`<article class="card pattern">${x.photo?`<img src="${x.photo}" alt="">`:'<div>🧶</div>'}<div><h3>${escapeHtml(x.name)}</h3><span class="badge">${escapeHtml(x.status)}</span><span class="badge">${escapeHtml(x.type)}</span><span class="badge">${escapeHtml(x.difficulty)}</span><p class="muted">${escapeHtml(x.owner)} · ${escapeHtml(x.notes||'Bez notatek')}</p><button class="secondary" onclick="removeItem(${x.id})">Usuń</button></div></article>`).join(''):'<div class="card empty">Nie ma jeszcze wzorów. Dodaj pierwszy dla mamy 🌷</div>'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function removeItem(id){items=items.filter(x=>x.id!==id);save()}$('search').oninput=render;
+$('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(items,null,2)],{type:'application/json'}));a.download='pracownia-mamy-kopia.json';a.click()};
+$('import').onchange=e=>{const r=new FileReader();r.onload=()=>{try{items=JSON.parse(r.result);save()}catch{alert('Nie udało się wczytać kopii.')}};r.readAsText(e.target.files[0])};
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').hidden=false});$('install').onclick=async()=>{if(deferred){deferred.prompt();deferred=null}};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');render();
+</script></body></html>
